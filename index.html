@@ -10,21 +10,25 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{--bg:#0a0f0d;--card:#121a17;--card2:#18221e;--line:#24332c;--txt:#eef5f0;--mut:#8fa399;--acc:#8ef04a;--acc2:#1d4a1f;--red:#ff6b6b;--blue:#4cc9f0;--purple:#a78bfa;--orange:#ffb347}
 [data-theme=light]{--bg:#f3f7f4;--card:#fff;--card2:#eaf1ec;--line:#d5e2d9;--txt:#10201a;--mut:#5d7267;--acc:#2f8f2f;--acc2:#d8f0d2}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 [hidden]{display:none!important}
-html,body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,Roboto,sans-serif}
+html,body{margin:0;background:var(--bg);color:var(--txt);font-family:'Plus Jakarta Sans',system-ui,-apple-system,Roboto,sans-serif;-webkit-font-smoothing:antialiased}
 body{padding-bottom:env(safe-area-inset-bottom)}
 #view{padding:16px 16px 24px;max-width:640px;margin:auto}
 h1,h2,h3{margin:0}
 .eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mut);font-weight:600}
 .mut{color:var(--mut)}.sm{font-size:13px}
 .top{display:flex;align-items:center;gap:12px;margin-bottom:22px}
-.avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#7be03e,#2d8a2d);display:grid;place-items:center;font-weight:800;color:#06210a}
-.top .t{flex:1}.top h2{font-size:19px}
+.avatar{width:44px;height:44px;flex:none;border-radius:14px;background:linear-gradient(135deg,#7be03e,#2d8a2d);display:grid;place-items:center;font-weight:800;color:#06210a}
+.top .t{flex:1;min-width:0}.top h2{font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.top .ibtn{width:42px;height:42px;border-radius:14px}
+button,input,select,textarea{font-family:inherit}
+h1,h2{letter-spacing:-.02em}
 .ibtn{width:48px;height:48px;border-radius:16px;border:1px solid var(--line);background:var(--card);color:var(--txt);font-size:20px}
 .hero{border-radius:28px;padding:22px;background:linear-gradient(135deg,#1a3a1f 0%,#0f1a14 70%);border:1px solid var(--line);margin:18px 0 26px;color:#eef5f0}
 [data-theme=light] .hero{background:linear-gradient(135deg,#c9efc0,#eaf6e6);color:#10201a}
@@ -35,9 +39,9 @@ h1,h2,h3{margin:0}
 .ring .n{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font-size:26px;font-weight:800}
 .ring small{display:block;font-size:9px;font-weight:500;color:var(--mut);letter-spacing:.1em}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:16px;margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:16px;margin-bottom:14px;box-shadow:inset 0 1px 0 #ffffff08}
 .stat{padding:16px}
-.stat .row{display:flex;justify-content:space-between;align-items:center}
+.stat .row{display:flex;justify-content:space-between;align-items:center;gap:8px}.stat .row .eyebrow{letter-spacing:.08em;font-size:10px}
 .stat .v{font-size:30px;font-weight:800;color:var(--acc);margin:14px 0 2px}
 .stat .v small{font-size:14px}
 .btn{display:block;width:100%;padding:13px;border:0;border-radius:14px;background:var(--acc);color:#07210b;font-weight:700;font-size:15px}
@@ -47,10 +51,13 @@ h1,h2,h3{margin:0}
 .tile{border-radius:22px;padding:16px;min-height:120px;border:1px solid var(--line);text-align:left;color:var(--txt);font-size:inherit}
 .tile b{display:block;margin-top:10px;font-size:17px}
 .tile span{font-size:13px;color:var(--mut)}
-.t1{background:linear-gradient(160deg,#1a3a24,#0f1f16)}.t2{background:linear-gradient(160deg,#2c2150,#171229)}
-.t3{background:linear-gradient(160deg,#14334a,#0c1b27)}.t4{background:linear-gradient(160deg,#4a2c1a,#26150c)}
-.t5{background:linear-gradient(160deg,#143a3a,#0b2020)}.t6{background:linear-gradient(160deg,#3a3a14,#202008)}
-[data-theme=light] .tile{background:var(--card)}
+.tile{--cc:var(--acc);background:var(--card);box-shadow:inset 0 1px 0 #ffffff08;transition:transform .15s,border-color .15s}
+.tile:active{transform:scale(.98)}
+.tile .ib,.stat .ib{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:color-mix(in srgb,var(--cc) 15%,transparent)}
+.tile .ib .ic{color:var(--cc)!important;width:22px;height:22px}
+.stat .ib .ic{width:22px;height:22px;margin:0;color:var(--cc,var(--acc))}
+.tile b{margin-top:14px!important;font-size:16px!important}
+.pbn{display:flex;align-items:center;gap:12px;cursor:pointer}.pbn .ib{width:42px;height:42px;flex:none;border-radius:13px;display:grid;place-items:center;background:var(--acc2)}.pbn .ib .ic{margin:0;color:var(--acc)}
 .dnav{display:flex;align-items:center;gap:8px;margin-bottom:14px}
 .dnav .mid{flex:1;text-align:center}.dnav .mid b{display:block;text-transform:capitalize}
 .dnav button{width:44px;height:44px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--txt);font-size:18px}
@@ -91,7 +98,7 @@ input,select,textarea{width:100%;padding:12px;border-radius:12px;border:1px soli
 .ibtn .ic,.dnav .ic,.x .ic,.ring .ic{margin:0}
 .ibtn .ic{width:22px;height:22px}.x .ic{width:1em;height:1em}
 .stat .row>span:first-child .ic{width:26px;height:26px;margin:0;color:var(--acc)}
-.tile .ic{width:28px;height:28px;margin:0;color:var(--acc)}
+
 .hero .ic,h1 .ic{color:var(--acc)}
 .add .ic,.btn .ic{margin-right:.35em}
 .opts{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:4px}.opts.o3{grid-template-columns:repeat(3,1fr)}
@@ -103,7 +110,7 @@ input,select,textarea{width:100%;padding:12px;border-radius:12px;border:1px soli
 .stepper{display:flex;align-items:center;justify-content:center;gap:18px;margin:8px 0}
 .stepper button{width:52px;height:52px;border-radius:16px;border:1.5px solid var(--line);background:var(--card2);color:var(--txt);font-size:26px}
 .stepper b{font-size:34px;min-width:50px;text-align:center;color:var(--acc)}
-.card[class*=" c-"]{--cc:var(--acc);border-left:4px solid var(--cc);background:linear-gradient(135deg,color-mix(in srgb,var(--cc) 11%,var(--card)),var(--card) 70%)}
+.card[class*=" c-"]{--cc:var(--acc);border-color:color-mix(in srgb,var(--cc) 20%,var(--line));background:linear-gradient(160deg,color-mix(in srgb,var(--cc) 7%,var(--card)),var(--card) 60%)}
 .card[class*=" c-"] .ch h3 .ic{color:var(--cc)}
 .c-food{--cc:var(--orange)!important}.c-drink,.c-water{--cc:var(--blue)!important}.c-work,.c-act{--cc:var(--acc)!important}
 .c-hyg{--cc:#2dd4bf!important}.c-sleep,.c-rest{--cc:var(--purple)!important}.c-weight{--cc:#f0d84a!important}.c-priv{--cc:#ff7aa8!important}
@@ -338,6 +345,7 @@ function applyTheme(){document.documentElement.dataset.theme=P().theme;$('meta[n
 function openModal(h){$('#sheet').innerHTML=emo(h);$('#modal').classList.add('on')}
 function closeModal(){$('#modal').classList.remove('on')}
 $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
+const cap1=s=>s.charAt(0).toUpperCase()+s.slice(1);
 const longDate=k=>parseKey(k).toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
 
 function render(){
@@ -354,8 +362,8 @@ function vHome(){const k=cur,t=totals(k),p=P(),pr=progress(k),h=new Date().getHo
 const hi=h<12?'Bom dia':h<18?'Boa tarde':'Boa noite';const C=2*Math.PI*48;
 const ini=(p.name||'MC').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
 const bd=backupDue(),sw=streak(okWater),st=streak(okTrain),sf=streak(okFull);
-return `<div class=top><div class=avatar>${esc(ini)}</div><div class=t><div class=eyebrow>Seu espaço pessoal</div><h2>${esc(p.name)}</h2></div><button class=ibtn data-a=tab data-v=profile style="margin-right:8px">👤</button><button class=ibtn data-a=pick style="margin-right:8px">📅</button><input type=date id=dp value="${cur}" max="${today()}" data-goto=1 style="opacity:0;position:absolute;width:1px;height:1px;padding:0;border:0;pointer-events:none"><button class=ibtn data-a=theme>${p.theme==='light'?'🌙':'☀️'}</button></div>
-<div class=eyebrow>${hi}</div><h1 style="font-size:28px;margin:6px 0 4px">Vamos evoluir? 👋</h1><div class=mut style="text-transform:capitalize">${longDate(k)}</div>${k!==today()?'<button class="btn sec sm2" data-a=hoje style="margin:8px 0 0;width:auto;padding:9px 16px">Voltar para hoje</button>':''}
+return `<div class=top><div class=avatar>${esc(ini)}</div><div class=t><div class=eyebrow>${hi}</div><h2>${esc(p.name)}</h2></div><button class=ibtn data-a=tab data-v=profile style="margin-right:8px">👤</button><button class=ibtn data-a=pick style="margin-right:8px">📅</button><input type=date id=dp value="${cur}" max="${today()}" data-goto=1 style="opacity:0;position:absolute;width:1px;height:1px;padding:0;border:0;pointer-events:none"><button class=ibtn data-a=theme>${p.theme==='light'?'🌙':'☀️'}</button></div>
+<h1 style="font-size:28px;margin:0 0 4px">Vamos evoluir?</h1><div class=mut>${cap1(longDate(k))}</div>${k!==today()?'<button class="btn sec sm2" data-a=hoje style="margin:8px 0 0;width:auto;padding:9px 16px">Voltar para hoje</button>':''}
 ${bd?`<div class="card c-weight" style="margin:16px 0 0"><div class=ch><h3>⬇ Faça um backup</h3></div><div class="sm mut">${db.profile.lastBackup?`Faz ${bd} dias desde o último backup.`:'Você ainda não fez nenhum backup.'} Se o navegador limpar os dados, tudo se perde.</div><div class=two style="margin-top:10px"><button class=btn data-a=export>Fazer agora</button><button class="btn sec" data-a=snooze>Depois</button></div></div>`:''}
 ${chHomeCard()}${proBanner()}
 <div class=hero><div class=eyebrow>Visão geral</div><h2>Seu dia em foco</h2><div class="sm mut">Acompanhe seus hábitos e sua evolução.</div>
@@ -364,14 +372,14 @@ ${chHomeCard()}${proBanner()}
 <div class=eyebrow>Suas sequências</div><div class=sum style="margin-top:8px">${[[sw+' d','Água em dia'],[st+' d','Treinando'],[sf+' d','Dias completos']].map(([v,l])=>`<div><b>${v}</b><span>${l}</span></div>`).join('')}</div>
 <div class=eyebrow style="margin-top:6px">Acompanhamento</div><h2 style="margin:4px 0 12px">Resumo de hoje</h2>
 <div class=grid2>
-<div class="card stat c-water" data-a=tab data-v=drink style="cursor:pointer"><div class=row><span style="font-size:24px">💧</span><span class=eyebrow>Água</span></div><div class=v>${nf(t.water)} <small>ml</small></div><div class="sm mut">Meta ${nf(p.waterGoal)} ml</div><button class="btn sm2" data-a=water style="background:var(--acc2);color:var(--acc)">+ 250 ml</button></div>
-<div class="card stat c-food" data-a=tab data-v=food style="cursor:pointer"><div class=row><span style="font-size:24px">🔥</span><span class=eyebrow>Alimentação</span></div><div class=v>${nf(t.kcal)} <small>kcal</small></div><div class="sm mut">Meta ${nf(p.kcalGoal)} kcal</div><div class="sm mut" style="margin-top:12px">${peek(k).foods.length?peek(k).foods.length+' alimento(s)':'Nenhuma refeição'}</div></div>
-<div class="card stat c-act" data-a=tab data-v=work style="cursor:pointer"><div class=row><span style="font-size:24px">🏃</span><span class=eyebrow>Atividade</span></div><div class=v>${nf(t.min)} <small>min</small></div><div class="sm mut">Queimou ~${nf(t.burn)} kcal</div><div class="sm mut" style="margin-top:12px">${peek(k).workouts.length?peek(k).workouts.length+' atividade(s)':'Sem atividades'}</div></div>
-<div class="card stat c-rest" data-a=tab data-v=sleep style="cursor:pointer"><div class=row><span style="font-size:24px">🌙</span><span class=eyebrow>Descanso</span></div><div class=v>${t.sl?`${Math.floor(t.sl/60)}<small>h</small> ${pad(t.sl%60)}<small>min</small>`:'-- <small>h</small>'}</div><div class="sm mut">Descanso registrado</div><div class="sm mut" style="margin-top:12px">${t.sl?'Registrado':'Aguardando registro'}</div></div>
+<div class="card stat c-water" data-a=tab data-v=drink style="cursor:pointer"><div class=row><span class=ib>💧</span><span class=eyebrow>Água</span></div><div class=v>${nf(t.water)} <small>ml</small></div><div class="sm mut">Meta ${nf(p.waterGoal)} ml</div><button class="btn sm2" data-a=water style="background:var(--acc2);color:var(--acc)">+ 250 ml</button></div>
+<div class="card stat c-food" data-a=tab data-v=food style="cursor:pointer"><div class=row><span class=ib>🔥</span><span class=eyebrow>Alimentação</span></div><div class=v>${nf(t.kcal)} <small>kcal</small></div><div class="sm mut">Meta ${nf(p.kcalGoal)} kcal</div><div class="sm mut" style="margin-top:12px">${peek(k).foods.length?peek(k).foods.length+' alimento(s)':'Nenhuma refeição'}</div></div>
+<div class="card stat c-act" data-a=tab data-v=work style="cursor:pointer"><div class=row><span class=ib>🏃</span><span class=eyebrow>Atividade</span></div><div class=v>${nf(t.min)} <small>min</small></div><div class="sm mut">Queimou ~${nf(t.burn)} kcal</div><div class="sm mut" style="margin-top:12px">${peek(k).workouts.length?peek(k).workouts.length+' atividade(s)':'Sem atividades'}</div></div>
+<div class="card stat c-rest" data-a=tab data-v=sleep style="cursor:pointer"><div class=row><span class=ib>🌙</span><span class=eyebrow>Descanso</span></div><div class=v>${t.sl?`${Math.floor(t.sl/60)}<small>h</small> ${pad(t.sl%60)}<small>min</small>`:'-- <small>h</small>'}</div><div class="sm mut">Descanso registrado</div><div class="sm mut" style="margin-top:12px">${t.sl?'Registrado':'Aguardando registro'}</div></div>
 </div>
 <div class=eyebrow style="margin-top:14px">Organize sua rotina</div><h2 style="margin:4px 0 12px">Telas do app</h2>
 <div class=grid2>
-${[['🏆','Desafio 30 dias','Sua missão de hoje','desafio'],['🍎','Alimentação','Refeições e nutrientes','food'],['🥤','Bebidas','Água, refri, energético','drink'],['💪','Exercício','Treinos e treino guiado','work'],['🚶','Caminhada','Mapa, GPS e ritmo','walk'],['🚿','Higiene','Hábitos diários','hyg'],['🌙','Sono','Horas e descanso','sleep'],['⚖️','Peso e medidas','Peso, medidas e fotos','weight'],['🔒','Privado','Só você vê','priv'],['📊','Estatísticas','Semana, mês e conquistas','data']].map(([e,tt,sb,v],i)=>`<button class="tile t${i%6+1}" data-a=tab data-v=${v}${v==='data'?' style="grid-column:1/-1;min-height:90px"':''}>${e}<b>${tt}</b><span>${sb}</span></button>`).join('')}
+${[['🏆','Desafio 30 dias','Sua missão de hoje','desafio'],['🍎','Alimentação','Refeições e nutrientes','food'],['🥤','Bebidas','Água, refri, energético','drink'],['💪','Exercício','Treinos e treino guiado','work'],['🚶','Caminhada','Mapa, GPS e ritmo','walk'],['🚿','Higiene','Hábitos diários','hyg'],['🌙','Sono','Horas e descanso','sleep'],['⚖️','Peso e medidas','Peso, medidas e fotos','weight'],['🔒','Privado','Só você vê','priv'],['📊','Estatísticas','Semana, mês e conquistas','data']].map(([e,tt,sb,v],i)=>`<button class="tile ${SC[v]||''}" data-a=tab data-v=${v}${i===0||v==='data'?' style="grid-column:1/-1"':''}><span class=ib>${e}</span><b>${tt}</b><span>${sb}</span></button>`).join('')}
 </div>`}
 
 /* ---- TELAS DO DIA (uma por assunto) ---- */
@@ -676,7 +684,7 @@ async function chShare(){const n=Math.min(chDay(),31),fin=n>30,st=chStats(),c=ch
   g.fillStyle=ok?'#8ef04a':fu?'#ffffff12':i+1===n?'#ffffff30':'#ff6b6b33';g.beginPath();g.roundRect(x,y,cell-gap*2,cell-gap*2-10,22);g.fill();
   T(ok?'✓':String(i+1),x+(cell-gap*2)/2,y+(cell-gap*2)/2+14,46,ok?'#0b1a07':'#eef5f0','800')}
  if(!fin){const ok=c.filter(x=>x[2]).length;T(ok>=4?'Dia completo ✅':'Hoje: '+ok+' de 5 tarefas',540,1590,56,ok>=4?'#8ef04a':'#eef5f0','800');T('Missão: '+CH_M[n-1][0],540,1665,42,'#9db0a6','600')}
- T('Faça comigo: '+location.host,540,1830,40,'#8ef04a','700');
+ T(CFG.SHARE_TEXT||('Faça comigo: '+(CFG.SITE_URL||location.host)),540,1830,40,'#8ef04a','700');
  const blob=await new Promise(r=>cv.toBlob(r,'image/png')),file=new File([blob],`desafio-dia-${n}.png`,{type:'image/png'});
  const text=fin?'Terminei o Desafio 30 Dias! 🏆':'Dia '+n+' de 30 do Desafio 30 Dias ✅ Bora fazer junto?',url=location.origin+location.pathname.replace(/[^/]*$/,'')+'vendas.html';
  try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],text:text+' '+url});return}}catch(e){if(e.name==='AbortError')return}
@@ -747,7 +755,7 @@ function proCard(){const tl=trialLeft();
  if(isPro())return `<div class="card c-food"><div class=ch><h3>💚 Premium ativo</h3><span class=tag>${esc(lic.plan||'')}</span></div><div class="sm mut">${esc(lic.email||'')}${lic.exp?' · válido até '+new Date(lic.exp).toLocaleDateString('pt-BR'):' · vitalício'}</div><div class=two style="margin-top:10px"><button class="btn sec" data-a=licCheck>Atualizar status</button><button class="btn sec" data-a=licOut>Sair deste aparelho</button></div></div>`;
  return `<div class="card c-food"><div class=ch><h3>💚 Premium</h3>${tl?`<span class=tag>TESTE: ${tl} DIA${tl>1?'S':''}</span>`:''}</div><div class="sm mut" style="margin-bottom:10px">${tl?`Você está no teste grátis de ${TRIAL_DAYS} dias com tudo liberado.`:'Seu teste grátis terminou. O registro do dia continua grátis para sempre.'} O desafio completo, a IA, o treino guiado, as fotos e as estatísticas completas fazem parte do Premium.</div><button class=btn data-a=paywall>Conhecer o Premium</button><button class="btn sec sm2" data-a=activate>Já comprei: ativar</button></div>`}
 function proBanner(){if(isPro())return '';const tl=trialLeft();
- return `<div class="card c-food" data-a=paywall style="margin:16px 0 0;cursor:pointer"><div class=ch><h3>${tl?`✨ Teste Premium: ${tl} dia${tl>1?'s':''} restante${tl>1?'s':''}`:'✨ Desbloqueie o Premium'}</h3><span style="color:var(--acc);font-weight:800">›</span></div><div class="sm mut">${tl?'Aproveite a IA, o treino guiado, as fotos e o desafio completo.':'Desafio 30 Dias completo, dieta e treino com IA, treino guiado e fotos'+(OFFERS[0]?' por '+OFFERS[0].preco+(OFFERS[0].plano==='vitalicio'?', pagamento único':'')+'.':'.')}</div></div>`}
+ return `<div class="card pbn" data-a=paywall style="margin:14px 0 0"><span class=ib>✨</span><div style="flex:1"><b style="display:block;font-size:15px">${tl?`Teste Premium: ${tl} dia${tl>1?'s':''} restante${tl>1?'s':''}`:'Desbloqueie o Premium'}</b><div class="sm mut" style="margin-top:2px">${tl?'Aproveite a IA, o treino guiado, as fotos e o desafio completo.':'Desafio 30 Dias completo, dieta e treino com IA, treino guiado e fotos'+(OFFERS[0]?' por '+OFFERS[0].preco+(OFFERS[0].plano==='vitalicio'?', pagamento único':'')+'.':'.')}</div></div><span style="color:var(--mut)">›</span></div>`}
 async function aiCall(kind,ms=60000){
  try{const j=await api('/ai',{kind,perfil:perfilParaIA(),token:lic&&lic.token},ms);if(!j.text)throw new Error('A IA não devolveu texto.');return j.text}
  catch(e){if(e.status===402){closeModal();mPaywall('ia');throw Object.assign(new Error(e.message),{shown:true})}throw e}}

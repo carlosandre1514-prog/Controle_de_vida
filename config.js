@@ -4,6 +4,9 @@
    os termos e o painel admin.
    ========================================================== */
 window.MCV = {
+  // Endereço público do app/página de vendas (aparece na imagem dos stories). Ex: meusite.com.br
+  SITE_URL: '',
+
   // Endereço do servidor (Cloudflare Worker da pasta worker/). Sem barra no fim.
   API: 'https://proud-sea-aab5.carlosandre-ad1514.workers.dev',
 
