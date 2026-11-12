@@ -10,7 +10,7 @@ App web instalável (PWA) para controlar alimentação, água, treino, sono, hig
 | `termos.html`, `privacidade.html` | Termos de uso e Política de Privacidade (LGPD) |
 | `admin.html` | Painel para liberar o Premium manualmente (vendas por Pix direto) |
 | `worker/` | Servidor na Cloudflare: IA, licenças e webhooks de pagamento |
-| `sw.js`, `manifest.webmanifest`, `icon*` | Funcionamento offline e instalação |
+| `sw.js`, `manifest.webmanifest`, `icon-*.png` | Funcionamento offline e instalação |
 
 ## Modelo de negócio
 
