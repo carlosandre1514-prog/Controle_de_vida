@@ -263,10 +263,11 @@ function workKcal(type,reps,kmv,min){const w=WORK.find(x=>x[0]===type),p=P();if(
  if(w[2]==='dist')return Math.round(kmv?kmv*p.weight*w[3]:5.5*p.weight*min/60);
  return Math.round(w[3]*p.weight*min/60)}
 /* meta de calorias (Mifflin-St Jeor) */
-function calcMeta(){const p=P(),q=db.profile,w=+p.weight||70,h=+p.height||170,a=+p.age||25;
- const bmr=10*w+6.25*h-5*a+(p.sex==='F'?-161:5),dias=+q.dias||3,fa=dias<=1?1.2:dias<=3?1.375:dias<=5?1.55:1.725,tdee=bmr*fa;
+const gordura=()=>{const v=+db.profile.bf;return v>=3&&v<=60?v:null};
+function calcMeta(){const p=P(),q=db.profile,w=pesoAtual()||70,h=+p.height||170,a=+p.age||25,bf=gordura(),mm=bf?w*(1-bf/100):null;
+ const bmr=mm?370+21.6*mm:10*w+6.25*h-5*a+(p.sex==='F'?-161:5),dias=+q.dias||3,fa=dias<=1?1.2:dias<=3?1.375:dias<=5?1.55:1.725,tdee=bmr*fa;
  let k=tdee;if(p.goal==='massa')k+=p.biotype==='ectomorfo'?500:300;else if(p.goal==='emagrecer')k=Math.max(tdee-400,bmr);
- const r=n=>Math.round(n/50)*50;return{bmr:Math.round(bmr),tdee:Math.round(tdee),dias,kcal:r(k),water:r(w*35)}}
+ const r=n=>Math.round(n/50)*50;return{bmr:Math.round(bmr),tdee:Math.round(tdee),dias,kcal:r(k),water:r(w*35),bf,mm:mm&&+mm.toFixed(1),formula:mm?'Katch-McArdle (massa magra)':'Mifflin-St Jeor'}}
 /* sequências e conquistas */
 function streak(fn){let k=today(),n=0;if(!fn(k))k=shift(k,-1);while(fn(k)&&n<4000){n++;k=shift(k,-1)}return n}
 function longest(fn){const ks=Object.keys(db.days).sort();if(!ks.length)return 0;let k=ks[0],best=0,run=0;const end=today();while(k<=end){if(fn(k)){run++;if(run>best)best=run}else run=0;k=shift(k,1)}return best}
@@ -594,9 +595,10 @@ return `<h1 style="font-size:24px;margin-bottom:14px">Perfil</h1>
 <div class=two>${f('Idade','age')}<div><label>Sexo</label><select data-bind=p.sex><option value=M ${p.sex==='M'?'selected':''}>Masculino</option><option value=F ${p.sex==='F'?'selected':''}>Feminino</option></select></div></div>
 <div class=two><div><label>Objetivo</label><select data-bind=p.goal>${Object.entries(GOALS).map(([k,v])=>`<option value=${k} ${p.goal===k?'selected':''}>${v}</option>`).join('')}</select></div>
 <div><label>Biotipo</label><select data-bind=p.biotype>${Object.keys(PLANS).map(b=>`<option value=${b} ${p.biotype===b?'selected':''}>${b[0].toUpperCase()+b.slice(1)}</option>`).join('')}</select></div></div>
-<div class="sm mut" style="margin-top:8px">IMC: <b>${nf(p.weight/((p.height/100)**2),1)}</b></div></div>
+${f('Gordura corporal (%) · opcional','bf','number','placeholder="Se souber" min=3 max=60')}
+<div class="sm mut" style="margin-top:8px">IMC: <b>${nf(pesoAtual()/((p.height/100)**2),1)}</b>${gordura()?` · Massa magra: <b>${nf(pesoAtual()*(1-gordura()/100),1)} kg</b>`:''}</div></div>
 <div class=card><div class=ch><h3>Metas diárias</h3></div><div class=two>${f('Água (ml)','waterGoal')}${f('Calorias (kcal)','kcalGoal')}</div>${f('Sono (horas)','sleepGoal')}
-<div class="sm mut" style="margin-top:12px;line-height:1.6">Sugestão calculada para você: <b style="color:var(--txt)">${nf(cm.kcal)} kcal</b> e <b style="color:var(--txt)">${nf(cm.water)} ml</b> de água por dia.<br>Metabolismo basal ${nf(cm.bmr)} kcal · gasto diário ~${nf(cm.tdee)} kcal (${cm.dias} treinos por semana, ajuste no questionário). É uma estimativa geral.</div><button class="btn sm2" data-a=calcMeta>Usar a sugestão</button></div>
+<div class="sm mut" style="margin-top:12px;line-height:1.6">Sugestão calculada para você: <b style="color:var(--txt)">${nf(cm.kcal)} kcal</b> e <b style="color:var(--txt)">${nf(cm.water)} ml</b> de água por dia.<br>Metabolismo basal ${nf(cm.bmr)} kcal · gasto diário ~${nf(cm.tdee)} kcal (${cm.dias} treinos por semana, ajuste no questionário). Cálculo: ${cm.formula}${cm.bf?'':'; informe o % de gordura acima para um cálculo mais preciso'}. É uma estimativa geral.</div><button class="btn sm2" data-a=calcMeta>Usar a sugestão</button></div>
 ${mf.length?`<div class=card><div class=ch><h3>Meus alimentos</h3><span class="sm mut">${mf.length}</span></div>${mf.map((m,i)=>`<div class=item><div class=i><b>${esc(m.name)}</b><span>${nf(m.kcal)} kcal por 100 g · P ${nf(m.p,1)} · C ${nf(m.c,1)} · G ${nf(m.f,1)}</span></div><button class=x data-a=delMyFood data-i=${i}>✕</button></div>`).join('')}</div>`:''}
 <div class=card><div class=ch><h3>Aparência</h3></div><div class=two><button class="btn ${p.theme!=='light'?'':'sec'}" data-a=setTheme data-v=dark>🌙 Escuro</button><button class="btn ${p.theme==='light'?'':'sec'}" data-a=setTheme data-v=light>☀️ Claro</button></div></div>
 ${proCard()}
@@ -693,20 +695,30 @@ async function chShare(){const n=Math.min(chDay(),31),fin=n>30,st=chStats(),c=ch
 /* ============ MODAIS ============ */
 const opts=(name,list,cur,cls='')=>`<input type=hidden name=${name} value="${esc(cur)}"><div class="opts ${cls}">${list.map(([v,l,ic])=>`<button type=button class="opt ${String(v)===String(cur)?'on':''}" data-a=pickc data-n=${name} data-v="${esc(v)}">${ic||''}<span>${l}</span></button>`).join('')}</div>`;
 const choice=(path,list,cur,cls='')=>`<div class="opts ${cls}">${list.map(([v,l,ic,x])=>`<button class="opt ${x||''} ${String(v)===String(cur??'')?'on':''}" data-a=setv data-p=${path} data-v="${esc(v)}">${ic||''}<span>${l}</span></button>`).join('')}</div>`;
-function mQuest(){const p=P(),q=db.profile;
+function mQuest(forAI){if(!forAI)aiPend=null;const p=P(),q=db.profile;
 const so=(n,arr,c)=>`<select name=${n}>${arr.map(([v,l])=>`<option value="${v}" ${String(v)===String(c)?'selected':''}>${l}</option>`).join('')}</select>`;
-openModal(`<form data-form=quest><h3>Vamos te conhecer</h3><div class="sm mut" style="margin-bottom:6px">Opcional. Essas respostas ajudam a montar dieta e treino pra você. Dá pra pular e responder depois no Perfil.</div>
+openModal(`<form data-form=quest><h3>${forAI?'Confira seus dados':'Vamos te conhecer'}</h3><div class="sm mut" style="margin-bottom:6px">${forAI?'A IA monta '+(forAI==='dieta'?'a dieta':'o treino')+' em cima destas respostas. Quanto mais certas, melhor o resultado.':'Opcional. Essas respostas ajudam a montar dieta e treino pra você. Dá pra pular e responder depois no Perfil.'}</div>
 <div class=two><div><label>Sexo</label>${so('sex',[['M','Masculino'],['F','Feminino']],p.sex)}</div><div><label>Idade</label><input name=age type=number inputmode=numeric value="${p.age}"></div></div>
-<div class=two><div><label>Altura (cm)</label><input name=height type=number inputmode=decimal value="${p.height}"></div><div><label>Peso atual (kg)</label><input name=weight type=number inputmode=decimal step=any value="${p.weight}"></div></div>
+<div class=two><div><label>Altura (cm)</label><input name=height type=number inputmode=decimal value="${p.height}"></div><div><label>Peso atual (kg)</label><input name=weight type=number inputmode=decimal step=any value="${pesoAtual()}"></div></div>
+<label>Percentual de gordura (%) · opcional</label><input name=bf type=number inputmode=decimal step=any min=3 max=60 value="${q.bf??''}" placeholder="Se souber (bioimpedância ou adipômetro)">
 <label>Biotipo</label>${so('biotype',[['ectomorfo','Ectomorfo: magro, difícil ganhar peso'],['mesomorfo','Mesomorfo: ganha massa com facilidade'],['endomorfo','Endomorfo: ganha peso fácil']],p.biotype)}
 <label>Objetivo</label>${so('goal',Object.entries(GOALS),p.goal)}
 <div class=two><div><label>Nível de treino</label>${so('level',[['iniciante','Iniciante'],['intermediario','Intermediário'],['avancado','Avançado']],p.level)}</div><div><label>Onde treina</label>${so('local',[['academia','Academia'],['casa','Em casa']],p.local||'academia')}</div></div>
 <label>Dias de treino por semana</label>${so('dias',[[2,'2'],[3,'3'],[4,'4'],[5,'5'],[6,'6']],q.dias||4)}
 <label>Alergias ou comidas que não come</label><input name=restr value="${esc(q.restr||'')}" placeholder="Ex.: lactose, glúten, não gosto de peixe">
 <label>Lesões ou observações de saúde</label><input name=obs value="${esc(q.obs||'')}" placeholder="Ex.: dor no joelho">
-<button class=btn style="margin-top:14px">Salvar respostas</button><button type=button class="btn sec sm2" data-a=close>Pular por enquanto</button></form>`)}
+<button class=btn style="margin-top:14px">${forAI?'Salvar e continuar':'Salvar respostas'}</button><button type=button class="btn sec sm2" data-a=close>${forAI?'Cancelar':'Pular por enquanto'}</button></form>`)}
 /* dados do perfil num objeto só, prontos para mandar à IA (Gemini) */
-function perfilParaIA(){const p=P(),q=db.profile;return{sexo:p.sex,idade:p.age,altura_cm:p.height,peso_kg:p.weight,biotipo:p.biotype,objetivo:GOALS[p.goal],nivel:p.level,local_treino:p.local||'academia',dias_treino:q.dias||null,meta_kcal:p.kcalGoal,restricoes:q.restr||'',saude:q.obs||''}}
+function pesoAtual(){const ks=Object.keys(db.days).sort().reverse();for(const k of ks)if(db.days[k].weight)return +db.days[k].weight;return +P().weight}
+function perfilParaIA(){const p=P(),q=db.profile,w=pesoAtual(),cm=calcMeta(),ks=lastKeys(7),T=ks.map(totals);
+ const comida=T.filter(t=>t.kcal>0).map(t=>t.kcal),fator={massa:2,emagrecer:2,manter:1.6}[p.goal]||1.6,fatorMM={massa:2.4,emagrecer:2.4,manter:2}[p.goal]||2;
+ return{sexo:p.sex==='F'?'feminino':'masculino',idade:+p.age,altura_cm:+p.height,peso_kg:w,imc:+(w/((p.height/100)**2)).toFixed(1),percentual_gordura:cm.bf||'não informado',massa_magra_kg:cm.mm||'não informada',
+  biotipo:p.biotype,objetivo:GOALS[p.goal]||'Manter o peso',nivel_treino:p.level,local_treino:p.local||'academia',dias_treino_por_semana:+q.dias||cm.dias,
+  metabolismo_basal_kcal:cm.bmr,gasto_diario_estimado_kcal:cm.tdee,meta_kcal_dia:q.kcalGoal!=null?+q.kcalGoal:cm.kcal,proteina_meta_g_dia:Math.round(cm.mm?cm.mm*fatorMM:w*fator),formula_calorias:cm.formula,
+  meta_agua_ml:q.waterGoal!=null?+q.waterGoal:cm.water,media_kcal_registrada_7_dias:comida.length?Math.round(comida.reduce((a,b)=>a+b,0)/comida.length):null,
+  dias_com_treino_nos_ultimos_7:ks.filter(k=>peek(k).workouts.length).length,restricoes_alimentares:q.restr||'nenhuma informada',saude_e_lesoes:q.obs||'nenhuma informada'}}
+function resumoIA(kind){const d=perfilParaIA();return [d.sexo==='feminino'?'Mulher':'Homem',d.idade+' anos',nf(d.peso_kg,1)+' kg',d.altura_cm+' cm',d.objetivo,...(d.massa_magra_kg>0?[d.percentual_gordura+'% de gordura']:[]),
+ kind==='dieta'?nf(d.meta_kcal_dia)+' kcal/dia':d.dias_treino_por_semana+'x por semana',kind==='dieta'?d.proteina_meta_g_dia+' g de proteína':(d.local_treino==='casa'?'em casa':'na academia')+' · '+d.nivel_treino].join(' · ')}
 /* ============ SERVIDOR (Cloudflare Worker: IA + licenças Premium) ============ */
 /* Toda a configuração de vendas fica em config.js */
 const CFG=window.MCV||{};
@@ -760,12 +772,22 @@ async function aiCall(kind,ms=60000){
  try{const j=await api('/ai',{kind,perfil:perfilParaIA(),token:lic&&lic.token},ms);if(!j.text)throw new Error('A IA não devolveu texto.');return j.text}
  catch(e){if(e.status===402){closeModal();mPaywall('ia');throw Object.assign(new Error(e.message),{shown:true})}throw e}}
 const mdLite=s=>esc(s).replace(/^\s*#{1,6}\s*(.+)$/gm,'<b>$1</b>').replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/^\s*[-*]\s+/gm,'• ').replace(/\n/g,'<br>');
-function aiShow(kind,txt,date){openModal(`<h3>✨ ${kind==='dieta'?'Dieta sugerida':'Treino sugerido'}</h3><div class="sm mut">Gerado em ${parseKey(date).toLocaleDateString('pt-BR')} · fica salvo neste aparelho</div><div style="font-size:14px;line-height:1.6;margin:10px 0">${mdLite(txt)}</div><div class="sm mut" style="margin-bottom:10px">Conteúdo gerado por IA, de caráter informativo. Não substitui nutricionista, educador físico ou médico.</div><button class="btn sec" data-a=close>Fechar</button>`)}
-async function aiAsk(kind){
+function aiShow(kind,txt,date,base){openModal(`<h3>✨ ${kind==='dieta'?'Sua dieta':'Seu treino'}</h3><div class="sm mut">Gerado em ${parseKey(date).toLocaleDateString('pt-BR')} · fica salvo neste aparelho</div>${base?`<div class=chips style="margin-top:8px"><span class=chip style="font-size:12px">Feito para: ${esc(base)}</span></div>`:''}<div style="font-size:14px;line-height:1.6;margin:10px 0">${mdLite(txt)}</div><div class="sm mut" style="margin-bottom:10px">Conteúdo gerado por IA, de caráter informativo. Não substitui nutricionista, educador físico ou médico.</div><button class="btn sec" data-a=close>Fechar</button>`)}
+let aiPend=null;
+function aiAsk(kind){
  if(!needPro('ia'))return;
- openModal(`<h3>✨ Pensando...</h3><div class="sm mut" style="margin-top:8px">A IA está montando isso com os dados do seu Perfil. Pode levar até 1 minuto.</div>`);
- try{const txt=await aiCall(kind);const p=db.profile;p.ai=p.ai||{};p.ai[kind]={txt,date:today()};save();aiShow(kind,txt,today());if(tab==='food'||tab==='work')render()}
- catch(e){if(e.shown)return;openModal(`<h3>Não deu certo</h3><div class="sm mut" style="margin:8px 0 14px">${esc(e.message)}</div><button class=btn data-a=ai data-k=${kind}>Tentar de novo</button><button class="btn sec sm2" data-a=close>Fechar</button>`)}}
+ if(!db.profile.qDone){aiPend=kind;mQuest(kind);return}
+ const d=perfilParaIA();
+ openModal(`<h3>✨ ${kind==='dieta'?'Dieta':'Treino'} sob medida</h3><div class="sm mut" style="margin:4px 0 10px">A IA vai montar com estes dados do seu perfil:</div>
+ <div class=card style="margin-bottom:10px">${[['Você',`${d.sexo==='feminino'?'Mulher':'Homem'}, ${d.idade} anos`],['Peso e altura',`${nf(d.peso_kg,1)} kg · ${d.altura_cm} cm · IMC ${nf(d.imc,1)}`],...(d.massa_magra_kg>0?[['Composição',`${nf(d.percentual_gordura,1)}% de gordura · ${nf(d.massa_magra_kg,1)} kg de massa magra`]]:[]),['Objetivo',d.objetivo],
+  ...(kind==='dieta'?[['Meta do dia',`${nf(d.meta_kcal_dia)} kcal · ${d.proteina_meta_g_dia} g de proteína`],['Restrições',d.restricoes_alimentares]]
+   :[['Treino',`${d.dias_treino_por_semana}x por semana · ${d.local_treino==='casa'?'em casa':'na academia'} · ${d.nivel_treino}`],['Saúde e lesões',d.saude_e_lesoes]])]
+  .map(([l,v])=>`<div class=item style="padding:8px 0"><div class=i><span>${l}</span><b style="font-size:14px">${esc(v)}</b></div></div>`).join('')}</div>
+ <button class=btn data-a=aiGo data-k=${kind}>Gerar agora</button><button class="btn sec sm2" data-a=aiEdit data-k=${kind}>Corrigir meus dados</button>`)}
+async function aiGo(kind){
+ openModal(`<h3>✨ Pensando...</h3><div class="sm mut" style="margin-top:8px">A IA está montando ${kind==='dieta'?'sua dieta':'seu treino'} com os dados do seu perfil. Pode levar até 1 minuto.</div>`);
+ try{const base=resumoIA(kind),txt=await aiCall(kind);const p=db.profile;p.ai=p.ai||{};p.ai[kind]={txt,date:today(),base};save();aiShow(kind,txt,today(),base);if(tab==='food'||tab==='work')render()}
+ catch(e){if(e.shown)return;openModal(`<h3>Não deu certo</h3><div class="sm mut" style="margin:8px 0 14px">${esc(e.message)}</div><button class=btn data-a=aiGo data-k=${kind}>Tentar de novo</button><button class="btn sec sm2" data-a=close>Fechar</button>`)}}
 function recentFoods(){const AF=allFoods(),out=[],seen={};
  for(const k of Object.keys(db.days).sort().reverse().slice(0,30)){for(const x of[...(db.days[k].foods||[])].reverse()){if(seen[x.name])continue;const i=AF.findIndex(a=>a[0]===x.name);if(i<0)continue;seen[x.name]=1;out.push([i,x.name,x.g]);if(out.length>=6)return out}}
  return out}
@@ -828,7 +850,7 @@ document.addEventListener('submit',e=>{const f=e.target.closest('form[data-form]
   if(m==='remove'){if(hashPin(fe.cur.value)!==pr.pin)return bad();delete pr.pin;save();closeModal();render();toast('PIN removido')}
   return}
  const d=D(cur),p=P();
- if(t==='quest'){const g=n=>fe[n].value,pr=db.profile;pr.sex=g('sex');pr.age=+g('age')||pr.age;pr.height=+g('height')||pr.height;pr.weight=+g('weight')||pr.weight;pr.biotype=g('biotype');pr.goal=g('goal');pr.level=g('level');pr.local=g('local');pr.dias=+g('dias');pr.restr=g('restr').trim();pr.obs=g('obs').trim();pr.qDone=true;if(+g('weight'))D(today()).weight=+g('weight');save();closeModal();render();toast('Respostas salvas');return}
+ if(t==='quest'){const g=n=>fe[n].value,pr=db.profile;pr.sex=g('sex');pr.age=+g('age')||pr.age;pr.height=+g('height')||pr.height;pr.weight=+g('weight')||pr.weight;pr.biotype=g('biotype');pr.goal=g('goal');pr.level=g('level');pr.local=g('local');pr.dias=+g('dias');pr.restr=g('restr').trim();pr.obs=g('obs').trim();{const b=+g('bf');if(b>=3&&b<=60)pr.bf=b;else delete pr.bf}pr.qDone=true;if(+g('weight'))D(today()).weight=+g('weight');save();closeModal();render();toast('Respostas salvas');if(aiPend){const k=aiPend;aiPend=null;aiAsk(k)}return}
  if(t==='measures'){const m={date:cur};let any=false;MF.forEach(([k])=>{const v=+fe[k].value;if(v>0){m[k]=v;any=true}});if(!any)return toast('Preencha ao menos uma medida');
   db.measures=(db.measures||[]).filter(x=>x.date!==cur);db.measures.push(m);db.measures.sort((a,b)=>a.date<b.date?-1:1);save();render();toast('Medidas salvas');return}
  if(t==='edit'){const tt=f.dataset.t,it=d[tt][+f.dataset.i];if(!it)return;
@@ -862,7 +884,8 @@ hoje:()=>{cur=today();render()},
 pick:()=>{const i=$('#dp');try{i.showPicker()}catch(e){i.click()}},
 goto:t=>{cur=t.dataset.d;tab=t.dataset.v||'food';render();window.scrollTo(0,0)},
 addFood:t=>mFood(t.dataset.meal),addDrink:mDrink,qwork:t=>mWork(t.dataset.t),close:closeModal,quest:mQuest,ai:t=>aiAsk(t.dataset.k),
-aiLast:t=>{const a=P().ai&&P().ai[t.dataset.k];if(a)aiShow(t.dataset.k,a.txt,a.date)},
+aiLast:t=>{const a=P().ai&&P().ai[t.dataset.k];if(a)aiShow(t.dataset.k,a.txt,a.date,a.base)},
+aiGo:t=>aiGo(t.dataset.k),aiEdit:t=>{aiPend=t.dataset.k;mQuest(t.dataset.k)},
 goProfile:()=>{closeModal();tab='profile';render();window.scrollTo(0,0)},
 paywall:()=>mPaywall(),
 chStart:()=>{db.profile.chStart=today();db.profile.chDone={};save();render();toast('Desafio começou! Dia 1')},
