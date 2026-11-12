@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#0a0f0d">
 <meta name="mobile-web-app-capable" content="yes">
 <title>Meu Controle de Vida</title>
+<meta name="description" content="Alimentação, água, treino, sono, peso e caminhadas em um só app. Funciona offline.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -64,7 +65,7 @@ h1,h2,h3{margin:0}
 .item .i{flex:1}.item .i b{display:block;font-size:15px}.item .i span{font-size:12px;color:var(--mut)}
 .item .x{border:0;background:none;color:var(--red);font-size:18px;padding:6px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{padding:9px 13px;border-radius:999px;border:1px solid var(--line);background:var(--card2);color:var(--txt);font-size:14px}
+.chip{text-decoration:none;display:inline-block;padding:9px 13px;border-radius:999px;border:1px solid var(--line);background:var(--card2);color:var(--txt);font-size:14px}
 .chip.on{background:var(--acc);color:#07210b;border-color:var(--acc);font-weight:700}
 label{display:block;font-size:13px;color:var(--mut);margin:10px 0 4px}
 input,select,textarea{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--card2);color:var(--txt);font-size:16px;font-family:inherit}
@@ -144,6 +145,7 @@ input.pin{text-align:center;letter-spacing:.5em;font-size:24px}
 <div id="toast"></div>
 <input type="file" id="imp" accept="application/json" hidden>
 <input type="file" id="ph" accept="image/*" hidden>
+<script src="config.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 /* ============ DADOS ============ */
@@ -230,7 +232,7 @@ casa:[
 ['Circuito superior','Flexões 4x12','Barra fixa ou remada 4x8','Flexão pike 3x10','Mergulho entre cadeiras 3x15','Caminhada com corridinhas 15 min'],
 ['Cardio longo','Caminhada com corridinhas 45 min','Alongamento']]}};
 const GOALS={manter:'Manter o peso',massa:'Ganhar massa',emagrecer:'Perder gordura'};
-const MN=[-5.0969,-38.3722]; // Morada Nova - CE
+const MN=[-14.235,-51.925]; // centro do Brasil (o mapa vai para a sua posição quando o GPS responde)
 
 /* ============ CÁLCULOS ============ */
 const toMin=t=>{if(!t)return null;const[h,m]=t.split(':').map(Number);return h*60+m};
@@ -350,6 +352,7 @@ const bd=backupDue(),sw=streak(okWater),st=streak(okTrain),sf=streak(okFull);
 return `<div class=top><div class=avatar>${esc(ini)}</div><div class=t><div class=eyebrow>Seu espaço pessoal</div><h2>${esc(p.name)}</h2></div><button class=ibtn data-a=tab data-v=profile style="margin-right:8px">👤</button><button class=ibtn data-a=pick style="margin-right:8px">📅</button><input type=date id=dp value="${cur}" max="${today()}" data-goto=1 style="opacity:0;position:absolute;width:1px;height:1px;padding:0;border:0;pointer-events:none"><button class=ibtn data-a=theme>${p.theme==='light'?'🌙':'☀️'}</button></div>
 <div class=eyebrow>${hi}</div><h1 style="font-size:28px;margin:6px 0 4px">Vamos evoluir? 👋</h1><div class=mut style="text-transform:capitalize">${longDate(k)}</div>${k!==today()?'<button class="btn sec sm2" data-a=hoje style="margin:8px 0 0;width:auto;padding:9px 16px">Voltar para hoje</button>':''}
 ${bd?`<div class="card c-weight" style="margin:16px 0 0"><div class=ch><h3>⬇ Faça um backup</h3></div><div class="sm mut">${db.profile.lastBackup?`Faz ${bd} dias desde o último backup.`:'Você ainda não fez nenhum backup.'} Se o navegador limpar os dados, tudo se perde.</div><div class=two style="margin-top:10px"><button class=btn data-a=export>Fazer agora</button><button class="btn sec" data-a=snooze>Depois</button></div></div>`:''}
+${proBanner()}
 <div class=hero><div class=eyebrow>Visão geral</div><h2>Seu dia em foco</h2><div class="sm mut">Acompanhe seus hábitos e sua evolução.</div>
 <div class=ringrow><div class=ring><svg width=110 height=110 viewBox="0 0 110 110"><circle cx=55 cy=55 r=48 fill=none stroke="#ffffff22" stroke-width=10 /><circle cx=55 cy=55 r=48 fill=none stroke="var(--acc)" stroke-width=10 stroke-linecap=round stroke-dasharray="${C}" stroke-dashoffset="${C*(1-pr/100)}"/></svg><div class=n><div>${pr}%<small>DO DIA</small></div></div></div>
 <div><b>${pr?'Continue assim!':'Seu progresso começa aqui'}</b><div class="sm mut" style="margin-top:6px">${pr?`${nf(t.water)} ml de água · ${t.hy} hábitos de higiene`:'Registre suas atividades para acompanhar seus resultados.'}</div></div></div></div>
@@ -363,7 +366,7 @@ ${bd?`<div class="card c-weight" style="margin:16px 0 0"><div class=ch><h3>⬇ F
 </div>
 <div class=eyebrow style="margin-top:14px">Organize sua rotina</div><h2 style="margin:4px 0 12px">Telas do app</h2>
 <div class=grid2>
-${[['🍎','Alimentação','Refeições e nutrientes','food'],['🥤','Bebidas','Água, refri, energético','drink'],['💪','Exercício','Treinos e treino guiado','work'],['🚶','Caminhada','Mapa e GPS · Morada Nova','walk'],['🚿','Higiene','Hábitos diários','hyg'],['🌙','Sono','Horas e descanso','sleep'],['⚖️','Peso e medidas','Peso, medidas e fotos','weight'],['🔒','Privado','Só você vê','priv'],['📊','Estatísticas','Semana, mês e conquistas','data']].map(([e,tt,sb,v],i)=>`<button class="tile t${i%6+1}" data-a=tab data-v=${v}${v==='data'?' style="grid-column:1/-1;min-height:90px"':''}>${e}<b>${tt}</b><span>${sb}</span></button>`).join('')}
+${[['🍎','Alimentação','Refeições e nutrientes','food'],['🥤','Bebidas','Água, refri, energético','drink'],['💪','Exercício','Treinos e treino guiado','work'],['🚶','Caminhada','Mapa, GPS e ritmo','walk'],['🚿','Higiene','Hábitos diários','hyg'],['🌙','Sono','Horas e descanso','sleep'],['⚖️','Peso e medidas','Peso, medidas e fotos','weight'],['🔒','Privado','Só você vê','priv'],['📊','Estatísticas','Semana, mês e conquistas','data']].map(([e,tt,sb,v],i)=>`<button class="tile t${i%6+1}" data-a=tab data-v=${v}${v==='data'?' style="grid-column:1/-1;min-height:90px"':''}>${e}<b>${tt}</b><span>${sb}</span></button>`).join('')}
 </div>`}
 
 /* ---- TELAS DO DIA (uma por assunto) ---- */
@@ -486,7 +489,7 @@ const paceF=(s,m)=>m<50?'--:--':(sp=>`${Math.floor(sp/60)}:${pad(Math.round(sp%6
 const trkTime=()=>trk?(trk.acc+(trk.paused?0:Date.now()-trk.last))/1000:0;
 const trkKcal=()=>trk?Math.round(trk.dist/1000*P().weight*0.8):0;
 function vWalk(){
-let h=`${hero('🚶','Caminhada','Mapa de Morada Nova – CE · percursos com GPS',km(db.routes.filter(r=>r.date===today()).reduce((a,r)=>a+r.dist,0))+' km','hoje · '+db.routes.filter(r=>r.date===today()).length+' percurso(s)',null)}
+let h=`${hero('🚶','Caminhada','Percursos com GPS, distância e ritmo',km(db.routes.filter(r=>r.date===today()).reduce((a,r)=>a+r.dist,0))+' km','hoje · '+db.routes.filter(r=>r.date===today()).length+' percurso(s)',null)}
 <div class="card c-map"><div class=ch><h3>🗺️ Caminhada / corrida</h3><button class=add data-a=locate style="background:var(--card2);color:var(--txt)">📍 Minha posição</button></div><div id=map></div>`;
 if(!trk)h+=`<button class=btn data-a=trkStart>▶ Iniciar caminhada / corrida</button><div class="sm mut" style="margin-top:8px">Dica: mantenha a tela ligada e o GPS ativo. O navegador pode pausar o rastreio com a tela apagada.</div>`;
 else h+=`<div class=big id=t-dist>${km(trk.dist)} km</div><div class=mrow><div><b id=t-time>${hms(trkTime())}</b><span>Tempo</span></div><div><b id=t-pace>${paceF(trkTime(),trk.dist)}</b><span>min/km</span></div><div><b id=t-kcal>${trkKcal()}</b><span>kcal</span></div></div><div class=two><button class="btn sec" data-a=trkPause>${trk.paused?'▶ Retomar':'⏸ Pausar'}</button><button class="btn red" data-a=trkFinish>■ Finalizar</button></div>`;
@@ -499,7 +502,8 @@ h+=`</div>`;return h}
 function initMap(){const el=$('#map');if(!el)return;
  if(typeof L==='undefined'){el.innerHTML='<p class=mut style="padding:20px">O mapa precisa de internet para carregar.</p>';return}
  if(map){map.remove();map=null}meMark=null;
- map=L.map(el).setView(MN,14);
+ map=L.map(el).setView(MN,4);
+ if(!trk&&navigator.geolocation)navigator.geolocation.getCurrentPosition(p=>{if(map&&!trk)map.setView([p.coords.latitude,p.coords.longitude],15)},()=>{},{timeout:10000,maximumAge:300000});
  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
  line=L.polyline([],{color:'#2fd13a',weight:5}).addTo(map);viewLayer=L.layerGroup().addTo(map);
  if(trk&&trk.pts.length){line.setLatLngs(trk.pts.map(p=>[p[0],p[1]]));map.fitBounds(line.getBounds(),{maxZoom:17})}}
@@ -544,10 +548,10 @@ function bars(vals,keys,goal,color){const W=320,H=100,n=vals.length,mx=Math.max(
  const f=k=>`${k.slice(8)}/${k.slice(5,7)}`;
  return s+`<text x=0 y=${H+13} class=lb>${f(keys[0])}</text><text x=${W} y=${H+13} text-anchor=end class=lb>${f(keys[n-1])}</text></svg>`}
 const avg=a=>{const v=a.filter(x=>x>0);return v.length?v.reduce((x,y)=>x+y,0)/v.length:0};
-function vData(){const keys=lastKeys(range),p=P(),T=keys.map(totals);
+function vData(){if(range>7&&!hasPremium())range=7;const keys=lastKeys(range),p=P(),T=keys.map(totals);
 const wts=Object.keys(db.days).sort().map(k=>[k,db.days[k].weight]).filter(x=>x[1]);
 const wl=wts[wts.length-1],wf=wts[0];
-let h=`${hero('📊','Estatísticas','Sua evolução ao longo do tempo')}<div class=seg>${[7,30,90,365].map(r=>`<button class="chip ${range===r?'on':''}" data-a=range data-r=${r}>${r===365?'Ano':r+' dias'}</button>`).join('')}</div>`;
+let h=`${hero('📊','Estatísticas','Sua evolução ao longo do tempo')}<div class=seg>${[7,30,90,365].map(r=>`<button class="chip ${range===r?'on':''}" data-a=range data-r=${r}>${r>7&&!hasPremium()?'🔒 ':''}${r===365?'Ano':r+' dias'}</button>`).join('')}</div>`;
 const sec=(t,vals,goal,color,txt)=>`<div class="card c-x" style="--cc:${color}"><div class=ch><h3>${t}</h3><span class="sm mut">${txt}</span></div>${bars(vals,keys,goal,color)}</div>`;
 h+=sec('💧 Água (ml)',T.map(t=>t.water),p.waterGoal,'var(--blue)',`média ${nf(avg(T.map(t=>t.water)))} ml`);
 h+=sec('🔥 Calorias consumidas',T.map(t=>t.kcal),p.kcalGoal,'var(--orange)',`média ${nf(avg(T.map(t=>t.kcal)))} kcal`);
@@ -582,11 +586,14 @@ return `<h1 style="font-size:24px;margin-bottom:14px">Perfil</h1>
 <div class="sm mut" style="margin-top:12px;line-height:1.6">Sugestão calculada para você: <b style="color:var(--txt)">${nf(cm.kcal)} kcal</b> e <b style="color:var(--txt)">${nf(cm.water)} ml</b> de água por dia.<br>Metabolismo basal ${nf(cm.bmr)} kcal · gasto diário ~${nf(cm.tdee)} kcal (${cm.dias} treinos por semana, ajuste no questionário). É uma estimativa geral.</div><button class="btn sm2" data-a=calcMeta>Usar a sugestão</button></div>
 ${mf.length?`<div class=card><div class=ch><h3>Meus alimentos</h3><span class="sm mut">${mf.length}</span></div>${mf.map((m,i)=>`<div class=item><div class=i><b>${esc(m.name)}</b><span>${nf(m.kcal)} kcal por 100 g · P ${nf(m.p,1)} · C ${nf(m.c,1)} · G ${nf(m.f,1)}</span></div><button class=x data-a=delMyFood data-i=${i}>✕</button></div>`).join('')}</div>`:''}
 <div class=card><div class=ch><h3>Aparência</h3></div><div class=two><button class="btn ${p.theme!=='light'?'':'sec'}" data-a=setTheme data-v=dark>🌙 Escuro</button><button class="btn ${p.theme==='light'?'':'sec'}" data-a=setTheme data-v=light>☀️ Claro</button></div></div>
-<div class=card><div class=ch><h3>IA (dieta e treino)</h3></div>${AI_PROXY?'<div class="sm mut" style="margin-bottom:6px">A IA usa o servidor do seu app (Cloudflare Worker).</div>':`<div class="sm mut" style="margin-bottom:10px">Cole aqui sua chave gratuita do Gemini. Ela fica só neste aparelho: não vai no backup e não fica no código.</div><label style="margin-top:0">Chave da API</label><input type=password id=aik autocomplete=off placeholder="Cole sua chave" value="${esc(AIK())}"><label>Modelo (opcional)</label><input id=aim placeholder="Deixe vazio para o padrão" value="${esc(AIM())}"><div class=two style="margin-top:10px"><button class=btn data-a=saveAI>Salvar</button><button class="btn sec" data-a=clearAI>Remover</button></div>`}<button class="btn sec sm2" data-a=testAI>Testar conexão com a IA</button><div id=aitest class="sm mut" style="margin-top:8px"></div></div>
+${proCard()}
 <div class=card><div class=ch><h3>Questionário inicial</h3></div><div class="sm mut" style="margin-bottom:10px">Opcional. Serve para montar dieta e treino sob medida com IA.</div><button class=btn data-a=quest>Responder / refazer</button></div>
 <div class=card><div class=ch><h3>Backup dos dados</h3></div><div class="sm mut" style="margin-bottom:10px">${n} dia(s) e ${db.routes.length} percurso(s) salvos neste aparelho. ${db.profile.lastBackup?'Último backup: '+parseKey(db.profile.lastBackup).toLocaleDateString('pt-BR')+'.':'Nenhum backup feito ainda.'} Se limpar os dados do navegador, tudo some. As fotos não entram no backup.</div>
 <div class=two><button class=btn data-a=export>⬇ Exportar</button><button class="btn sec" data-a=import>⬆ Importar</button></div>
-<button class="btn red sm2" data-a=wipe>Apagar tudo</button></div>`}
+<button class="btn red sm2" data-a=wipe>Apagar tudo</button></div>
+<div class=card><div class=ch><h3>Sobre</h3></div><div class="sm mut" style="line-height:1.6">Seus registros ficam guardados neste aparelho. O app oferece orientações gerais e não substitui acompanhamento médico, nutricional ou de educação física.</div>
+<div class=chips style="margin-top:10px"><a class=chip href="termos.html" target=_blank>Termos de uso</a><a class=chip href="privacidade.html" target=_blank>Privacidade</a>${SUPPORT_EMAIL?`<a class=chip href="mailto:${esc(SUPPORT_EMAIL)}">Suporte</a>`:''}${CFG.SUPPORT_WHATSAPP?`<a class=chip href="https://wa.me/${esc(CFG.SUPPORT_WHATSAPP)}" target=_blank rel=noopener>WhatsApp</a>`:''}</div>
+<button class="btn sec sm2" data-a=testAI>Testar conexão com o servidor</button><div id=aitest class="sm mut" style="margin-top:8px"></div></div>`}
 
 /* ============ MODAIS ============ */
 const opts=(name,list,cur,cls='')=>`<input type=hidden name=${name} value="${esc(cur)}"><div class="opts ${cls}">${list.map(([v,l,ic])=>`<button type=button class="opt ${String(v)===String(cur)?'on':''}" data-a=pickc data-n=${name} data-v="${esc(v)}">${ic||''}<span>${l}</span></button>`).join('')}</div>`;
@@ -605,37 +612,65 @@ openModal(`<form data-form=quest><h3>Vamos te conhecer</h3><div class="sm mut" s
 <button class=btn style="margin-top:14px">Salvar respostas</button><button type=button class="btn sec sm2" data-a=close>Pular por enquanto</button></form>`)}
 /* dados do perfil num objeto só, prontos para mandar à IA (Gemini) */
 function perfilParaIA(){const p=P(),q=db.profile;return{sexo:p.sex,idade:p.age,altura_cm:p.height,peso_kg:p.weight,biotipo:p.biotype,objetivo:GOALS[p.goal],nivel:p.level,local_treino:p.local||'academia',dias_treino:q.dias||null,meta_kcal:p.kcalGoal,restricoes:q.restr||'',saude:q.obs||''}}
-/* ---- IA (Gemini): servidor próprio (Worker) ou chave guardada só neste aparelho ---- */
-/* Endereço do servidor da IA (Cloudflare Worker). Vazio = usa a chave do Perfil. */
-const AI_PROXY='https://proud-sea-aab5.carlosandre-ad1514.workers.dev';
-const AIK=()=>{try{return localStorage.getItem('mcv_gemini_key')||''}catch(e){return ''}};
-const AIM=()=>{try{return localStorage.getItem('mcv_gemini_model')||''}catch(e){return ''}};
-async function aiCall(prompt,ms=60000){
+/* ============ SERVIDOR (Cloudflare Worker: IA + licenças Premium) ============ */
+/* Toda a configuração de vendas fica em config.js */
+const CFG=window.MCV||{};
+const API=CFG.API||'';
+const CHECKOUT=CFG.CHECKOUT||{};
+const PRICE=Object.assign({mensal:'',anual:'',anualMes:''},CFG.PRICE);
+const TRIAL_DAYS=CFG.TRIAL_DAYS||7;
+const SUPPORT_EMAIL=CFG.SUPPORT_EMAIL||'';
+const LS=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return null}};
+const devId=(()=>{let d=LS('mcv_dev');if(!d){d=(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2));LS('mcv_dev',d)}return d})();
+let lic=(()=>{try{return JSON.parse(LS('mcv_lic'))||null}catch(e){return null}})();
+const saveLic=l=>{lic=l;LS('mcv_lic',l?JSON.stringify(l):null)};
+function trialLeft(){const s=db.profile.trialStart;if(!s)return TRIAL_DAYS;return Math.max(0,TRIAL_DAYS-daysBetween(s,today()))}
+function isPro(){return !!(lic&&lic.token&&(!lic.exp||lic.exp>Date.now()))}
+function hasPremium(){return isPro()||trialLeft()>0}
+function needPro(what){if(hasPremium())return true;mPaywall(what);return false}
+async function api(path,body,ms=20000){
+ if(!API)throw new Error('Servidor do app não configurado.');
  if(navigator.onLine===false)throw new Error('Sem internet no momento.');
- const key=AIK();
- if(!AI_PROXY&&!key)throw new Error('Falta cadastrar a chave da IA no Perfil.');
- if(AI_PROXY){const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),ms);
-  try{const r=await fetch(AI_PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt}),signal:ctl.signal});clearTimeout(tm);
-   let j;try{j=await r.json()}catch(e){throw new Error('O servidor da IA respondeu algo inesperado. Confira se o código do Worker foi publicado (Deploy) no Cloudflare.')}
-   if(r.ok&&j.text)return j.text;
-   throw new Error(j.error||(r.status===429?'Muitas solicitações. Espere alguns minutos.':'A IA não respondeu (erro '+r.status+').'))
-  }catch(e){clearTimeout(tm);if(e.name==='AbortError')throw new Error('A IA demorou demais (mais de '+Math.round(ms/1000)+' segundos). Tente de novo.');if(e instanceof TypeError)throw new Error('Não consegui falar com o servidor da IA. Verifique a internet e se o Worker permite este endereço do app.');throw e}}
- const models=AIM()?[AIM()]:['gemini-3.8-flash','gemini-3.7-flash'];let err='A IA não respondeu.';
- for(const m of models){
-  let r,j;try{r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent`,{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});j=await r.json()}catch(e){throw new Error('Sem conexão com a IA. Verifique a internet.')}
-  if(!r.ok){err=(j.error&&j.error.message)||('Erro '+r.status);if(r.status===404)continue;throw new Error(err)}
-  const txt=(j.candidates?.[0]?.content?.parts||[]).map(p=>p.text||'').join('');
-  if(!txt)throw new Error('A IA não devolveu texto.');return txt}
- throw new Error(err)}
+ const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),ms);
+ try{const r=await fetch(API+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...body,device:devId}),signal:ctl.signal});
+  let j={};try{j=await r.json()}catch(e){throw new Error('O servidor respondeu algo inesperado. Tente de novo mais tarde.')}
+  if(!r.ok||j.ok===false){const er=new Error(j.error||('Erro '+r.status));er.status=r.status;er.data=j;throw er}
+  return j}
+ catch(e){if(e.name==='AbortError')throw new Error('O servidor demorou demais para responder. Tente de novo.');if(e instanceof TypeError)throw new Error('Não consegui falar com o servidor. Verifique a internet.');throw e}
+ finally{clearTimeout(tm)}}
+/* confere a licença de tempos em tempos (pega reembolso, cancelamento e renovação) */
+async function licRefresh(force){if(!lic||!API)return;if(!force&&lic.checked&&Date.now()-lic.checked<3*864e5)return;
+ try{const j=await api('/verify',{token:lic.token});saveLic({...lic,...j,checked:Date.now()})}
+ catch(e){if(e.status===401||e.status===403){saveLic(null);render();toast('Sua assinatura Premium não está mais ativa')}}}
+const PRO_FEATS=[['✨','Dieta e treino com IA','Planos sob medida para o seu corpo e objetivo'],['▶','Treino guiado','Séries, cargas e descanso cronometrado'],['📷','Fotos de evolução','Compare seu antes e depois'],['📊','Estatísticas completas','30 dias, 90 dias e o ano inteiro'],['💚','Apoie o app','Novos recursos todo mês']];
+const PRO_WHY={ia:'A IA é um recurso Premium.',guiado:'O treino guiado é um recurso Premium.',fotos:'As fotos de evolução são um recurso Premium.',historico:'O histórico além de 7 dias é Premium.'};
+function mPaywall(what){const buy=(k,l,sub,hl)=>CHECKOUT[k]?`<a class="btn ${hl?'':'sec'}" style="display:block;text-align:center;text-decoration:none;margin-top:8px" href="${esc(CHECKOUT[k])}" target=_blank rel=noopener>${l}<div style="font-size:12px;font-weight:500;opacity:.85">${sub}</div></a>`:'';
+ const any=CHECKOUT.mensal||CHECKOUT.anual;
+ openModal(`<h3>💚 Meu Controle de Vida Premium</h3>${what&&PRO_WHY[what]?`<div class="sm mut" style="margin-top:4px">${PRO_WHY[what]} ${trialLeft()?'':'Seu teste grátis terminou.'}</div>`:''}
+ <div style="margin:12px 0">${PRO_FEATS.map(([e,t,d])=>`<div class=ach><span style="font-size:20px;width:24px;text-align:center">${e}</span><div><b>${t}</b><span>${d}</span></div></div>`).join('')}</div>
+ ${buy('anual','Anual · '+PRICE.anual,'equivale a '+PRICE.anualMes+' · melhor preço',1)}${buy('mensal','Mensal · '+PRICE.mensal,'cancele quando quiser')}
+ ${any?'':'<div class="sm mut" style="margin:8px 0">As vendas ainda não foram abertas.</div>'}
+ <button type=button class="btn sec sm2" data-a=activate>Já comprei: ativar Premium</button>
+ <div class="sm mut" style="margin-top:10px;text-align:center">Pagamento seguro por Pix, cartão ou boleto. <a href="termos.html" target=_blank style="color:var(--mut)">Termos</a> · <a href="privacidade.html" target=_blank style="color:var(--mut)">Privacidade</a></div>`)}
+function mActivate(email){openModal(`<form data-form=activate><h3>Ativar Premium</h3><div class="sm mut" style="margin:6px 0 4px">Digite o e-mail usado na compra. Você pode usar o Premium em até 3 aparelhos.</div><label>E-mail da compra</label><input name=email type=email required autocomplete=email inputmode=email value="${esc(email||'')}"><div id=acterr class=sm style="color:var(--red);margin-top:8px"></div><button class=btn style="margin-top:12px">Ativar</button><button type=button class="btn sec sm2" data-a=close>Cancelar</button></form>`)}
+async function doActivate(f){const email=f.elements.email.value.trim().toLowerCase(),b=f.querySelector('button.btn'),er=$('#acterr');b.disabled=true;b.textContent='Verificando...';er.textContent='';
+ try{const j=await api('/activate',{email});saveLic({...j,checked:Date.now()});closeModal();render();toast('Premium ativado! Obrigado pelo apoio')}
+ catch(e){er.textContent=e.message;b.disabled=false;b.textContent='Ativar'}}
+function proCard(){const tl=trialLeft();
+ if(isPro())return `<div class="card c-food"><div class=ch><h3>💚 Premium ativo</h3><span class=tag>${esc(lic.plan||'')}</span></div><div class="sm mut">${esc(lic.email||'')}${lic.exp?' · renova/expira em '+new Date(lic.exp).toLocaleDateString('pt-BR'):' · vitalício'}</div><div class=two style="margin-top:10px"><button class="btn sec" data-a=licCheck>Atualizar status</button><button class="btn sec" data-a=licOut>Sair deste aparelho</button></div></div>`;
+ return `<div class="card c-food"><div class=ch><h3>💚 Premium</h3>${tl?`<span class=tag>TESTE: ${tl} DIA${tl>1?'S':''}</span>`:''}</div><div class="sm mut" style="margin-bottom:10px">${tl?`Você está no teste grátis de ${TRIAL_DAYS} dias com tudo liberado.`:'Seu teste grátis terminou. O registro do dia continua grátis para sempre.'} IA, treino guiado, fotos de evolução e estatísticas completas fazem parte do Premium.</div><button class=btn data-a=paywall>Conhecer o Premium</button><button class="btn sec sm2" data-a=activate>Já comprei: ativar</button></div>`}
+function proBanner(){if(isPro())return '';const tl=trialLeft();
+ return `<div class="card c-food" data-a=paywall style="margin:16px 0 0;cursor:pointer"><div class=ch><h3>${tl?`✨ Teste Premium: ${tl} dia${tl>1?'s':''} restante${tl>1?'s':''}`:'✨ Desbloqueie o Premium'}</h3><span style="color:var(--acc);font-weight:800">›</span></div><div class="sm mut">${tl?'Aproveite a IA, o treino guiado e as fotos de evolução.':'Dieta e treino com IA, treino guiado, fotos e estatísticas completas a partir de '+PRICE.anualMes+'.'}</div></div>`}
+async function aiCall(kind,ms=60000){
+ try{const j=await api('/ai',{kind,perfil:perfilParaIA(),token:lic&&lic.token},ms);if(!j.text)throw new Error('A IA não devolveu texto.');return j.text}
+ catch(e){if(e.status===402){closeModal();mPaywall('ia');throw Object.assign(new Error(e.message),{shown:true})}throw e}}
 const mdLite=s=>esc(s).replace(/^\s*#{1,6}\s*(.+)$/gm,'<b>$1</b>').replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/^\s*[-*]\s+/gm,'• ').replace(/\n/g,'<br>');
-function aiShow(kind,txt,date){openModal(`<h3>✨ ${kind==='dieta'?'Dieta sugerida':'Treino sugerido'}</h3><div class="sm mut">Gerado em ${parseKey(date).toLocaleDateString('pt-BR')} · fica salvo neste aparelho</div><div style="font-size:14px;line-height:1.6;margin:10px 0">${mdLite(txt)}</div><button class="btn sec" data-a=close>Fechar</button>`)}
+function aiShow(kind,txt,date){openModal(`<h3>✨ ${kind==='dieta'?'Dieta sugerida':'Treino sugerido'}</h3><div class="sm mut">Gerado em ${parseKey(date).toLocaleDateString('pt-BR')} · fica salvo neste aparelho</div><div style="font-size:14px;line-height:1.6;margin:10px 0">${mdLite(txt)}</div><div class="sm mut" style="margin-bottom:10px">Conteúdo gerado por IA, de caráter informativo. Não substitui nutricionista, educador físico ou médico.</div><button class="btn sec" data-a=close>Fechar</button>`)}
 async function aiAsk(kind){
- if(!AI_PROXY&&!AIK()){openModal(`<h3>Falta a chave da IA</h3><div class="sm mut" style="margin:8px 0 14px">Cadastre sua chave do Gemini no Perfil para usar este recurso.</div><button class=btn data-a=goProfile>Ir para o Perfil</button>`);return}
+ if(!needPro('ia'))return;
  openModal(`<h3>✨ Pensando...</h3><div class="sm mut" style="margin-top:8px">A IA está montando isso com os dados do seu Perfil. Pode levar até 1 minuto.</div>`);
- const task=kind==='dieta'?'Monte uma dieta de um dia completo (café da manhã, almoço, lanche, jantar e ceia) com a quantidade em gramas de cada alimento, usando comidas comuns no Brasil (arroz, feijão, cuscuz, macaxeira, ovo, frango, banana etc.), com estimativa de calorias por refeição e total do dia (perto da meta_kcal) e 3 dicas.':'Monte um treino semanal de 7 dias (marque os dias de descanso), com exercícios, séries e repetições, adequado ao nível, ao local de treino e aos dias por semana informados, com dicas de progressão. Escreva cada exercício no formato "Nome do exercício 4x10".';
- const prompt=`Você é um assistente de saúde e fitness dentro de um app pessoal. Responda em português do Brasil, de forma direta. Dados da pessoa (JSON): ${JSON.stringify(perfilParaIA())}. Respeite as restrições alimentares e as observações de saúde. ${task} Formato: texto simples, sem tabelas; use apenas **negrito** para títulos e listas com "- ". Seja conciso. No fim, diga em uma frase curta que é uma orientação geral e que um profissional pode ajustar melhor.`;
- try{const txt=await aiCall(prompt);const p=db.profile;p.ai=p.ai||{};p.ai[kind]={txt,date:today()};save();aiShow(kind,txt,today());if(tab==='food'||tab==='work')render()}
- catch(e){openModal(`<h3>Não deu certo</h3><div class="sm mut" style="margin:8px 0 14px">${esc(e.message)}</div><button class=btn data-a=ai data-k=${kind}>Tentar de novo</button><button class="btn sec sm2" data-a=close>Fechar</button>`)}}
+ try{const txt=await aiCall(kind);const p=db.profile;p.ai=p.ai||{};p.ai[kind]={txt,date:today()};save();aiShow(kind,txt,today());if(tab==='food'||tab==='work')render()}
+ catch(e){if(e.shown)return;openModal(`<h3>Não deu certo</h3><div class="sm mut" style="margin:8px 0 14px">${esc(e.message)}</div><button class=btn data-a=ai data-k=${kind}>Tentar de novo</button><button class="btn sec sm2" data-a=close>Fechar</button>`)}}
 function recentFoods(){const AF=allFoods(),out=[],seen={};
  for(const k of Object.keys(db.days).sort().reverse().slice(0,30)){for(const x of[...(db.days[k].foods||[])].reverse()){if(seen[x.name])continue;const i=AF.findIndex(a=>a[0]===x.name);if(i<0)continue;seen[x.name]=1;out.push([i,x.name,x.g]);if(out.length>=6)return out}}
  return out}
@@ -689,6 +724,7 @@ document.addEventListener('input',e=>{const f=e.target.closest('form[data-form=f
  const dr=e.target.closest('form[data-form=drink]');if(dr)$('#ck').hidden=dr.elements.type.value!=='outra';
  if(e.target.dataset.search)doSearch(e.target.value)});
 document.addEventListener('submit',e=>{const f=e.target.closest('form[data-form]');if(!f)return;e.preventDefault();const t=f.dataset.form,fe=f.elements;
+ if(t==='activate'){doActivate(f);return}
  if(t==='pin'){const m=f.dataset.mode,pr=db.profile;
   if(Date.now()<pinLock)return toast('Aguarde alguns segundos e tente de novo');
   const bad=()=>{pinFails++;if(pinFails>=5){pinLock=Date.now()+30000;pinFails=0}toast('PIN incorreto')};
@@ -733,10 +769,11 @@ goto:t=>{cur=t.dataset.d;tab=t.dataset.v||'food';render();window.scrollTo(0,0)},
 addFood:t=>mFood(t.dataset.meal),addDrink:mDrink,qwork:t=>mWork(t.dataset.t),close:closeModal,quest:mQuest,ai:t=>aiAsk(t.dataset.k),
 aiLast:t=>{const a=P().ai&&P().ai[t.dataset.k];if(a)aiShow(t.dataset.k,a.txt,a.date)},
 goProfile:()=>{closeModal();tab='profile';render();window.scrollTo(0,0)},
-saveAI:()=>{try{localStorage.setItem('mcv_gemini_key',$('#aik').value.trim());localStorage.setItem('mcv_gemini_model',$('#aim').value.trim());toast('Chave salva neste aparelho')}catch(e){toast('Não foi possível salvar')}},
-clearAI:()=>{try{localStorage.removeItem('mcv_gemini_key');localStorage.removeItem('mcv_gemini_model')}catch(e){}render();toast('Chave removida')},
+paywall:()=>mPaywall(),activate:()=>mActivate(lic&&lic.email),
+licCheck:async()=>{await licRefresh(true);render();toast(isPro()?'Premium ativo':'Status atualizado')},
+licOut:()=>{if(!confirm('Sair do Premium neste aparelho? Você pode ativar de novo depois com o mesmo e-mail.'))return;api('/release',{token:lic.token}).catch(()=>{});saveLic(null);render()},
 testAI:async()=>{const el=$('#aitest');el.textContent='Testando...';const t0=Date.now();
- try{const txt=await aiCall('Responda apenas com a palavra: ok',25000);el.innerHTML=`<b style="color:var(--acc)">Funcionando</b> (${((Date.now()-t0)/1000).toFixed(1)} s). Resposta: ${esc(txt.slice(0,40))}`}
+ try{await api('/health',{},15000);el.innerHTML=`<b style="color:var(--acc)">Servidor funcionando</b> (${((Date.now()-t0)/1000).toFixed(1)} s)`}
  catch(e){el.innerHTML=`<b style="color:var(--red)">Falhou:</b> ${esc(e.message)}`}},
 priv:()=>{if(showPriv){showPriv=false;render();return}if(P().pin)mPin('enter');else{showPriv=true;render()}},
 pinSet:()=>mPin(P().pin?'change':'set'),pinRemove:()=>mPin('remove'),
@@ -746,7 +783,7 @@ privAdd:()=>{const v=$('#ptime').value;if(!v)return toast('Informe o horário');
 privDel:t=>{if(!confirm('Remover este registro?'))return;const x=D(privSel).intim;x.times=x.times||[];if(+t.dataset.i>=0)x.times.splice(+t.dataset.i,1);else x.times=[];x.had=x.times.length?1:0;x.count=x.times.length;save();render()},
 delw:t=>{if(!confirm('Remover este peso?'))return;D(t.dataset.d).weight=null;save();render()},
 delMeasure:t=>{if(!confirm('Remover estas medidas?'))return;db.measures=db.measures.filter(m=>m.date!==t.dataset.d);save();render()},
-addPhoto:()=>$('#ph').click(),
+addPhoto:()=>{if(needPro('fotos'))$('#ph').click()},
 viewPhoto:async t=>{try{const p=await phTx('readonly',s=>s.get(+t.dataset.id));if(!p)return;openModal(`<h3>${parseKey(p.date).toLocaleDateString('pt-BR')}</h3><img src="${p.data}" alt="" style="width:100%;border-radius:14px;margin:8px 0"><div class=two><button class="btn sec" data-a=close>Fechar</button><button class="btn red" data-a=delPhoto data-id=${p.id}>Apagar</button></div>`)}catch(e){toast('Não foi possível abrir a foto')}},
 delPhoto:async t=>{if(!confirm('Apagar esta foto?'))return;try{await phTx('readwrite',s=>s.delete(+t.dataset.id))}catch(e){}closeModal();loadPhotos()},
 qdrink:t=>{const dd=DRINKS.find(x=>x[0]===t.dataset.t),ml=+t.dataset.ml;D(cur).drinks.push({type:dd[0],label:dd[1],ml,kcal:Math.round(dd[2]*ml/100)});save();render();toast('Adicionado!')},
@@ -760,13 +797,13 @@ calcMeta:()=>{const c=calcMeta();db.profile.kcalGoal=c.kcal;db.profile.waterGoal
 setv:t=>{const[a,c]=t.dataset.p.split('.'),d=D(cur);d[a]=d[a]||{};d[a][c]=t.dataset.v;save();render()},
 del:t=>{if(!confirm('Remover este item?'))return;D(cur)[t.dataset.t].splice(+t.dataset.i,1);save();render()},
 hyg:t=>{const h=D(cur).hygiene;h[t.dataset.k]=!h[t.dataset.k];save();render()},
-range:t=>{range=+t.dataset.r;render()},
+range:t=>{const r=+t.dataset.r;if(r>7&&!needPro('historico'))return;range=r;render()},
 trkStart:startTrk,trkPause:pauseTrk,trkFinish:finishTrk,
 viewRoute:t=>viewRoute(t.dataset.id),
 delRoute:t=>{if(!confirm('Apagar este percurso?'))return;db.routes=db.routes.filter(r=>r.id!=t.dataset.id);Object.values(db.days).forEach(d=>d.workouts=(d.workouts||[]).filter(w=>w.routeId!=t.dataset.id));save();render()},
 locate:()=>{if(!navigator.geolocation||!map)return toast('GPS indisponível');navigator.geolocation.getCurrentPosition(p=>{const ll=[p.coords.latitude,p.coords.longitude];if(meMark)map.removeLayer(meMark);meMark=L.circleMarker(ll,{radius:8,color:'#fff',fillColor:'#2f8cff',fillOpacity:1}).addTo(map);map.setView(ll,16)},e=>toast('GPS: '+e.message),{enableHighAccuracy:true,timeout:15000})},
 /* treino guiado */
-gStart:startGuided,gOpen:()=>{tab='guided';render();window.scrollTo(0,0)},
+gStart:()=>{if(needPro('guiado'))startGuided()},gOpen:()=>{tab='guided';render();window.scrollTo(0,0)},
 gSet:()=>{const e=gd.ex[gd.i],load=+$('#gk').value||0,reps=+$('#gr').value||0;if(!reps&&!load)return toast('Informe carga ou repetições');
  e.log.push({load,reps});const lastEx=gd.i>=gd.ex.length-1,lastSet=e.log.length>=e.sets;if(!(lastEx&&lastSet))gd.restEnd=Date.now()+gd.restSec*1000;render()},
 gRest:t=>{gd.restEnd+=(+t.dataset.s)*1000;render()},gSkipRest:()=>{gd.restEnd=0;render()},
@@ -787,4 +824,28 @@ document.addEventListener('change',e=>{const el=e.target;
  if(b.startsWith('p.'))db.profile[b.slice(2)]=v;
  else{const[a,c]=b.split('.'),d=D(cur);if(c){d[a]=d[a]||{};d[a][c]=v}else{d[a]=v;if(a==='weight'&&v&&!Object.keys(db.days).some(k=>k>cur&&db.days[k].weight))db.profile.weight=v}}
  save();if(el.dataset.re||b==='p.theme')render()});
-$('#imp').addEventListener('change',e=>{const f=
+
+$('#imp').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
+ r.onload=()=>{try{const d=JSON.parse(r.result);
+  if(!d||typeof d!=='object'||typeof d.days!=='object'||Array.isArray(d.days))throw 0;
+  if(Object.keys(d.days).some(k=>!/^\d{4}-\d{2}-\d{2}$/.test(k)))throw 0;
+  if(!confirm('Substituir os dados atuais pelo backup? Uma cópia dos dados atuais será guardada para desfazer.'))return;
+  try{localStorage.setItem(KEY+'_antes_import',JSON.stringify(db))}catch(x){}
+  const keepTrial=db.profile.trialStart;
+  db=Object.assign(DEF(),d);db.profile=db.profile||{};if(keepTrial&&(!db.profile.trialStart||db.profile.trialStart>keepTrial))db.profile.trialStart=keepTrial;
+  save();render();toast('Backup importado')}catch(x){toast('Arquivo inválido')}};r.readAsText(f);e.target.value=''});
+$('#ph').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
+ try{const data=await shrink(f);await phTx('readwrite',s=>s.put({id:Date.now(),date:cur,data}));loadPhotos();toast('Foto salva')}catch(x){toast('Não foi possível salvar a foto')}});
+function checkDay(){const t=today();if(t!==lastToday){if(cur===lastToday)cur=t;lastToday=t;if(!trk)render()}}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){checkDay();licRefresh()}});setInterval(checkDay,60000);
+window.addEventListener('beforeunload',e=>{if(trk){e.preventDefault();e.returnValue=''}});
+if(!db.profile.trialStart){db.profile.trialStart=today();save()}
+render();
+licRefresh();
+(()=>{const q=new URLSearchParams(location.search);if(q.get('a')==='agua'){history.replaceState(null,'',location.pathname);A.water()}else if(q.has('ativar')){history.replaceState(null,'',location.pathname);mActivate(q.get('ativar')||'')}
+ else if(q.has('premium')){history.replaceState(null,'',location.pathname);mPaywall()}
+ else if(!db.profile.askedQ){db.profile.askedQ=true;save();mQuest()}})();
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+</script>
+</body>
+</html>
