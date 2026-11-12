@@ -5,6 +5,8 @@
 #   CLOUDFLARE_API_TOKEN  obrigatório: token da Cloudflare (modelo "Edit Cloudflare Workers")
 #   ADMIN_KEY             obrigatório: a senha que você vai usar no admin.html
 #   GEMINI_API_KEY        opcional: chave do Gemini, se o Worker ainda não tiver uma
+#   KIWIFY_TOKEN          opcional: token do webhook da Kiwify (pagamento automático)
+#   HOTMART_HOTTOK        opcional: hottok do webhook da Hotmart (pagamento automático)
 
 name: Publicar servidor
 
@@ -41,6 +43,8 @@ jobs:
         env:
           ADMIN_KEY: ${{ secrets.ADMIN_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          KIWIFY_TOKEN: ${{ secrets.KIWIFY_TOKEN }}
+          HOTMART_HOTTOK: ${{ secrets.HOTMART_HOTTOK }}
         run: |
           existentes=$($WRANGLER secret list 2>/dev/null || echo '[]')
           echo "Segredos que já existem no Worker:"; echo "$existentes" | grep -o '"name": *"[^"]*"' || true
@@ -61,6 +65,16 @@ jobs:
             printf '%s' "$GEMINI_API_KEY" | $WRANGLER secret put GEMINI_API_KEY
           elif ! echo "$existentes" | grep -q '"GEMINI_API_KEY"'; then
             echo "::warning::O Worker não tem GEMINI_API_KEY. A IA não vai funcionar até você cadastrar esse segredo no GitHub."
+          fi
+
+          if [ -n "$KIWIFY_TOKEN" ]; then
+            printf '%s' "$KIWIFY_TOKEN" | $WRANGLER secret put KIWIFY_TOKEN
+          fi
+          if [ -n "$HOTMART_HOTTOK" ]; then
+            printf '%s' "$HOTMART_HOTTOK" | $WRANGLER secret put HOTMART_HOTTOK
+          fi
+          if [ -z "$KIWIFY_TOKEN$HOTMART_HOTTOK" ] && ! echo "$existentes" | grep -qE '"(KIWIFY_TOKEN|HOTMART_HOTTOK)"'; then
+            echo "::notice::Pagamento automático ainda desligado: cadastre KIWIFY_TOKEN (ou HOTMART_HOTTOK) nos segredos do GitHub e rode este workflow de novo."
           fi
 
       - name: Testar o servidor
