@@ -5,7 +5,8 @@ App web instalável (PWA) para controlar alimentação, água, treino, sono, hig
 | Arquivo | O que é |
 |---|---|
 | `index.html` | O app |
-| `config.js` | **Preços, links de pagamento e seus dados. É o único arquivo que você precisa editar para vender.** |
+| `config.js` | **Ofertas, preços, links de pagamento e seus dados. É o único arquivo que você precisa editar para vender.** |
+| `VENDER.md` | Plano de vendas sem investimento |
 | `vendas.html` | Página de vendas (é o link que você divulga) |
 | `termos.html`, `privacidade.html` | Termos de uso e Política de Privacidade (LGPD) |
 | `admin.html` | Painel para liberar o Premium manualmente (vendas por Pix direto) |
@@ -14,17 +15,20 @@ App web instalável (PWA) para controlar alimentação, água, treino, sono, hig
 
 ## Modelo de negócio
 
+> **Para começar a vender, leia o [`VENDER.md`](VENDER.md):** plano completo sem investimento, com roteiros de vídeo e mensagens prontas.
+
+Produto principal: **Desafio 30 Dias**. Os 3 primeiros dias são grátis, depois o **acesso vitalício custa R$ 27,90** (pagamento único). Ofertas e preços ficam em `OFFERS`, no `config.js`.
+
 | | Grátis | Premium |
 |---|---|---|
 | Registros do dia (comida, água, treino, sono, higiene, peso, GPS) | ✅ | ✅ |
+| Desafio 30 Dias | dias 1 a 3 | completo |
 | Estatísticas | 7 dias | 30, 90 e 365 dias |
 | Dieta e treino com IA | 3 gerações de teste | 30 por dia |
-| Treino guiado | — | ✅ |
-| Fotos de evolução | — | ✅ |
+| Treino guiado e fotos de evolução | — | ✅ |
+| Imagem do dia para os stories | ✅ | ✅ |
 
-- Todo usuário novo ganha **7 dias de Premium grátis** (sem cartão). Depois disso, quem quiser continuar com a IA e os extras assina.
-- Preços sugeridos: **R$ 9,90/mês** ou **R$ 59,90/ano** (equivale a R$ 4,99/mês). Mude em `config.js`.
-- Custo por usuário: perto de zero. A Cloudflare tem plano gratuito generoso e o Gemini Flash custa frações de centavo por geração.
+Quem instala ganha **3 dias de Premium** (`TRIAL_DAYS`).
 
 ## Passo a passo para começar a vender
 
@@ -50,11 +54,11 @@ npx wrangler deploy
 ### 3. Criar o produto na plataforma de pagamento
 Recomendo **Kiwify** ou **Hotmart**: elas cuidam de Pix, cartão, boleto, nota fiscal, recorrência e reembolso.
 
-1. Crie o produto como **assinatura**, com uma oferta mensal e outra anual.
-2. Copie os links de checkout para `CHECKOUT` em `config.js`.
+1. Crie o produto (pagamento único de R$ 27,90 para o vitalício; se quiser também mensal ou anual, crie como assinatura).
+2. Copie o link do checkout para `link` em `OFFERS`, no `config.js`.
 3. Cadastre o webhook (**um por oferta**, com o plano na URL):
-   - Kiwify: `https://SEU-WORKER.workers.dev/webhook/kiwify?plano=anual`. Copie o token do webhook e rode `npx wrangler secret put KIWIFY_TOKEN`.
-   - Hotmart: `https://SEU-WORKER.workers.dev/webhook/hotmart?plano=anual`. Copie o hottok e rode `npx wrangler secret put HOTMART_HOTTOK`.
+   - Kiwify: `https://SEU-WORKER.workers.dev/webhook/kiwify?plano=vitalicio`. Copie o token do webhook e rode `npx wrangler secret put KIWIFY_TOKEN`.
+   - Hotmart: `https://SEU-WORKER.workers.dev/webhook/hotmart?plano=vitalicio`. Copie o hottok e rode `npx wrangler secret put HOTMART_HOTTOK`.
 4. Na página de obrigado da plataforma, coloque o link `https://SEU-APP/index.html?ativar=` para o cliente cair direto na tela de ativação.
 5. **Teste com uma compra real de valor baixo** (ou com o botão de teste de webhook) e confira no `admin.html` se o e-mail apareceu. O formato dos webhooks foi implementado conforme a documentação pública das plataformas, mas confirme com um evento real antes de divulgar.
 
@@ -64,7 +68,7 @@ Em `config.js`: nome ou razão social, CPF/CNPJ, cidade, e-mail ou WhatsApp de s
 ### 5. Divulgar
 - Divulgue o link da `vendas.html` no Instagram, TikTok, grupos e status do WhatsApp.
 - Vídeos curtos mostrando "a IA montou minha dieta em 20 segundos" costumam converter bem.
-- Ofereça o plano anual como principal: ele traz o dinheiro adiantado e menos cancelamentos.
+- O plano detalhado de divulgação está no `VENDER.md`.
 
 ## Como o cliente ativa
 Ele compra → abre o app → **Perfil → Premium → Já comprei: ativar** → digita o e-mail da compra. O Premium vale para até 3 aparelhos. Reembolso ou chargeback desativam o Premium sozinhos, e a renovação estende a validade.

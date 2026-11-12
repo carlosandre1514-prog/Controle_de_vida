@@ -3,34 +3,36 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Meu Controle de Vida · seu corpo e sua rotina em um só app</title>
-<meta name="description" content="Controle alimentação, água, treino, sono, peso e caminhadas em um só app. Dieta e treino montados por IA. Teste grátis por 7 dias.">
+<title>Desafio 30 Dias · Meu Controle de Vida</title>
+<meta name="description" content="Um app que te diz exatamente o que fazer hoje para mudar seu corpo em 30 dias. Água, comida, treino e sono, com missões diárias e IA. Comece grátis.">
 <meta name="theme-color" content="#0a0f0d">
-<meta property="og:title" content="Meu Controle de Vida">
-<meta property="og:description" content="Alimentação, água, treino, sono e peso em um só app. Dieta e treino por IA. Teste grátis.">
+<meta property="og:title" content="Desafio 30 Dias · Meu Controle de Vida">
+<meta property="og:description" content="Uma missão por dia. Em 30 dias, outro corpo e outra rotina. Comece grátis.">
 <meta property="og:image" content="img/arte.jpg">
 <meta property="og:type" content="website">
-<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
 <style>
-:root{--bg:#0a0f0d;--card:#121a17;--card2:#18221e;--line:#24332c;--txt:#eef5f0;--mut:#9db0a6;--acc:#8ef04a;--acc2:#1d4a1f}
+:root{--bg:#0a0f0d;--card:#121a17;--card2:#18221e;--line:#24332c;--txt:#eef5f0;--mut:#9db0a6;--acc:#8ef04a;--acc2:#1d4a1f;--red:#ff6b6b}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,Roboto,"Segoe UI",sans-serif;line-height:1.55}
 a{color:inherit}
 .w{max-width:1040px;margin:0 auto;padding:0 20px}
+.bar{background:var(--acc);color:#0b1a07;text-align:center;font-weight:800;font-size:14px;padding:9px 12px}
 nav{display:flex;align-items:center;gap:10px;padding:16px 0}
 nav img{width:34px;height:34px;border-radius:9px}
 nav b{font-size:16px}
 nav .sp{flex:1}
-.btn{display:inline-block;background:var(--acc);color:#0b1a07;font-weight:800;border-radius:14px;padding:15px 22px;text-decoration:none;text-align:center;border:0;font-size:16px}
+.btn{display:inline-block;background:var(--acc);color:#0b1a07;font-weight:800;border-radius:14px;padding:16px 24px;text-decoration:none;text-align:center;border:0;font-size:17px}
 .btn.sec{background:var(--card2);color:var(--txt);border:1px solid var(--line)}
 .btn.sm{padding:10px 14px;font-size:14px;border-radius:12px}
-.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center;padding:28px 0 56px}
+.btn.big{display:block;width:100%;font-size:19px;padding:19px}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center;padding:24px 0 56px}
 .eyebrow{color:var(--acc);font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:12px}
-h1{font-size:clamp(32px,5.4vw,54px);line-height:1.06;margin:10px 0 16px;letter-spacing:-.02em}
+h1{font-size:clamp(34px,5.6vw,58px);line-height:1.04;margin:10px 0 16px;letter-spacing:-.02em}
 h1 em{font-style:normal;color:var(--acc)}
 h2{font-size:clamp(26px,3.6vw,36px);line-height:1.15;margin:8px 0 12px;letter-spacing:-.01em}
-.lead{font-size:18px;color:var(--mut);max-width:540px}
+.lead{font-size:18px;color:var(--mut);max-width:560px}
 .cta{display:flex;gap:10px;flex-wrap:wrap;margin:24px 0 10px}
 .small{font-size:13px;color:var(--mut)}
 .art{border-radius:28px;width:100%;display:block;border:1px solid var(--line);box-shadow:0 30px 80px #000a}
@@ -40,118 +42,120 @@ section{padding:56px 0;border-top:1px solid var(--line)}
 .card .ic{font-size:26px}
 .card h3{margin:8px 0 6px;font-size:17px}
 .card p{margin:0;color:var(--mut);font-size:15px}
-.steps{counter-reset:s;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}
-.steps .card::before{counter-increment:s;content:counter(s);display:inline-grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--acc2);color:var(--acc);font-weight:800}
-.prices{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px;align-items:stretch}
-.price{display:flex;flex-direction:column}
-.price.hl{border:2px solid var(--acc);position:relative}
-.price .tag{position:absolute;top:-12px;left:20px;background:var(--acc);color:#0b1a07;font-weight:800;font-size:12px;padding:4px 10px;border-radius:999px}
-.price .v{font-size:32px;font-weight:800;margin:6px 0 2px}
-.price ul{padding:0;margin:14px 0 18px;list-style:none;flex:1}
-.price li{padding:6px 0;border-top:1px solid var(--line);font-size:15px}
-.price li::before{content:"✓ ";color:var(--acc);font-weight:800}
-.price li.no{color:var(--mut)}
-.price li.no::before{content:"– ";color:var(--mut)}
+.days{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;margin:22px 0 8px;max-width:560px}
+.days div{aspect-ratio:1;border-radius:9px;display:grid;place-items:center;font-size:12px;font-weight:800;background:var(--card2);color:var(--mut)}
+.days .ok{background:var(--acc);color:#0b1a07}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px}
+.vs ul{margin:10px 0 0;padding-left:18px;color:var(--mut)}
+.vs li{margin:6px 0}
+.offer{max-width:520px;margin:24px auto 0;border:2px solid var(--acc);text-align:center;position:relative}
+.offer .tag{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--acc);color:#0b1a07;font-weight:800;font-size:12px;padding:4px 12px;border-radius:999px;white-space:nowrap}
+.offer .de{color:var(--mut);text-decoration:line-through;font-size:18px}
+.offer .v{font-size:48px;font-weight:900;margin:2px 0;letter-spacing:-.02em}
+.offer ul{text-align:left;list-style:none;padding:0;margin:18px 0}
+.offer li{padding:7px 0;border-top:1px solid var(--line)}
+.offer li::before{content:"✓ ";color:var(--acc);font-weight:800}
+.more{max-width:520px;margin:12px auto 0;display:grid;gap:10px}
+.guarantee{display:flex;gap:14px;align-items:center;max-width:520px;margin:18px auto 0;text-align:left}
+.guarantee b{font-size:40px}
 details{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-top:10px}
 summary{cursor:pointer;font-weight:700}
 details p{color:var(--mut);margin:10px 0 0}
-footer{padding:36px 0 60px;border-top:1px solid var(--line);color:var(--mut);font-size:14px}
+footer{padding:36px 0 90px;border-top:1px solid var(--line);color:var(--mut);font-size:14px}
 footer a{color:var(--mut);margin-right:14px}
-@media (max-width:820px){.hero,.grid,.steps,.prices{grid-template-columns:1fr}.hero{padding-top:8px}.art{max-width:440px;margin:0 auto}}
+.sticky{position:fixed;left:0;right:0;bottom:0;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:#0a0f0de6;backdrop-filter:blur(8px);border-top:1px solid var(--line);display:none}
+@media (max-width:820px){.hero,.grid,.vs{grid-template-columns:1fr}.hero{padding-top:8px}.art{max-width:440px;margin:0 auto}.sticky{display:block}}
 </style>
 </head>
 <body>
+<div class="bar">🔥 Preço de lançamento por tempo limitado</div>
 <div class="w">
-<nav><img src="icon-192.png" alt=""><b>Meu Controle de Vida</b><span class="sp"></span><a class="btn sm sec" href="index.html">Abrir o app</a></nav>
+<nav><img src="icon.svg" alt=""><b>Meu Controle de Vida</b><span class="sp"></span><a class="btn sm sec" href="index.html">Entrar no app</a></nav>
 
 <header class="hero">
  <div>
-  <div class="eyebrow">Saúde · Foco · Evolução</div>
-  <h1>Sua rotina inteira <em>em um só app.</em></h1>
-  <p class="lead">Alimentação, água, treino, sono, peso e caminhadas, tudo no celular, mesmo sem internet. E quando precisar, a IA monta sua dieta e seu treino sob medida.</p>
-  <div class="cta"><a class="btn" href="index.html">Começar grátis</a><a class="btn sec" href="#precos">Ver planos</a></div>
-  <div class="small"><span data-trial>7</span> dias de Premium grátis · sem cartão · funciona no Android e no iPhone</div>
+  <div class="eyebrow">Desafio 30 Dias</div>
+  <h1>Em 30 dias, <em>outro corpo e outra rotina.</em></h1>
+  <p class="lead">Você não precisa de mais motivação. Precisa saber <b>o que fazer hoje</b>. O app te dá 5 tarefas por dia (água, comida, treino, sono e uma missão especial) e acompanha tudo por você.</p>
+  <div class="cta"><a class="btn" href="index.html">Começar grátis agora</a><a class="btn sec" href="#oferta">Ver preço</a></div>
+  <div class="small">3 primeiros dias grátis · sem cartão · Android e iPhone · funciona sem internet</div>
  </div>
  <img class="art" src="img/arte.jpg" alt="Arte do Meu Controle de Vida" width="900" height="900">
 </header>
 
 <section>
- <div class="eyebrow">O que você controla</div>
- <h2>Tudo o que importa para evoluir</h2>
+ <div class="eyebrow">Como funciona</div>
+ <h2>Um quadradinho verde por dia</h2>
+ <p class="lead">Cumpriu 4 das 5 tarefas, o dia fica verde. Ver a sequência crescendo é o que faz você não desistir na segunda semana.</p>
+ <div class="days" id="days"></div>
  <div class="grid">
-  <div class="card"><div class="ic">🍎</div><h3>Alimentação</h3><p>Calorias, proteína, carboidrato e gordura por refeição, com alimentos do dia a dia do brasileiro.</p></div>
-  <div class="card"><div class="ic">💧</div><h3>Água e bebidas</h3><p>Meta diária calculada para o seu peso e um toque para registrar cada copo.</p></div>
-  <div class="card"><div class="ic">💪</div><h3>Treino da semana</h3><p>Plano para academia ou casa conforme seu biotipo, além do treino guiado com cronômetro de descanso.</p></div>
-  <div class="card"><div class="ic">🚶</div><h3>Caminhada com GPS</h3><p>Mapa do percurso, distância, ritmo e calorias. Recordes salvos automaticamente.</p></div>
-  <div class="card"><div class="ic">🌙</div><h3>Sono e higiene</h3><p>Horas dormidas, qualidade do descanso e hábitos de autocuidado em sequência.</p></div>
-  <div class="card"><div class="ic">⚖️</div><h3>Peso, medidas e fotos</h3><p>Gráfico da evolução, medidas do corpo e fotos de antes e depois.</p></div>
+  <div class="card"><div class="ic">💧</div><h3>Água na medida certa</h3><p>Meta calculada para o seu peso. Um toque registra cada copo.</p></div>
+  <div class="card"><div class="ic">🍎</div><h3>Comida sem neura</h3><p>Calorias e proteína das comidas do dia a dia: arroz, feijão, cuscuz, ovo, frango…</p></div>
+  <div class="card"><div class="ic">💪</div><h3>Treino pronto</h3><p>Plano para academia ou casa, treino guiado com cronômetro e caminhada com GPS.</p></div>
+  <div class="card"><div class="ic">🌙</div><h3>Sono</h3><p>Horas dormidas e qualidade do descanso, porque é dormindo que o corpo muda.</p></div>
+  <div class="card"><div class="ic">✨</div><h3>30 missões diferentes</h3><p>"Um dia sem refri", "100 agachamentos", "jantar leve"… uma por dia, sem tédio.</p></div>
+  <div class="card"><div class="ic">🤖</div><h3>Dieta e treino por IA</h3><p>Responda 1 minuto de perguntas e receba cardápio com gramas e treino da semana.</p></div>
  </div>
 </section>
 
 <section>
- <div class="eyebrow">Inteligência artificial</div>
- <h2>Dieta e treino montados para você</h2>
- <p class="lead">Responda um questionário rápido (objetivo, nível, onde treina, restrições) e a IA cria um cardápio com gramas e calorias e um treino semanal com séries e repetições. Dá para refazer quando quiser.</p>
- <div class="steps">
-  <div class="card"><h3>Instale em 10 segundos</h3><p>Abra o app no navegador e toque em "Adicionar à tela inicial". Não precisa de loja.</p></div>
-  <div class="card"><h3>Registre seu dia</h3><p>Poucos toques por refeição, copo d'água ou treino. Funciona offline.</p></div>
-  <div class="card"><h3>Acompanhe a evolução</h3><p>Sequências, conquistas e estatísticas mostram seu progresso.</p></div>
+ <div class="eyebrow">Por que funciona</div>
+ <h2>Sem o app, você já sabe como termina</h2>
+ <div class="vs">
+  <div class="card"><h3 style="color:var(--red)">Sozinho</h3><ul><li>Começa na segunda, para na quinta</li><li>Não sabe se bebeu água suficiente</li><li>Não sabe quanto comeu</li><li>Não vê progresso e desanima</li></ul></div>
+  <div class="card" style="border-color:var(--acc)"><h3 style="color:var(--acc)">Com o Desafio 30 Dias</h3><ul><li>Sabe exatamente o que fazer hoje</li><li>Metas calculadas para o seu corpo</li><li>Sequência verde que dá vontade de continuar</li><li>Fotos e medidas do dia 1 ao dia 30</li></ul></div>
  </div>
 </section>
 
-<section id="precos">
- <div class="eyebrow">Planos</div>
- <h2>Comece grátis. Evolua com o Premium.</h2>
- <div class="prices">
-  <div class="card price">
-   <h3>Grátis</h3><div class="v">R$ 0</div><div class="small">para sempre</div>
-   <ul><li>Registro de alimentação, água, treino, sono e higiene</li><li>Caminhada com GPS</li><li>Peso e medidas</li><li>Estatísticas de 7 dias</li><li>Backup dos seus dados</li><li class="no">Dieta e treino com IA</li><li class="no">Treino guiado</li><li class="no">Fotos de evolução</li></ul>
-   <a class="btn sec" href="index.html">Usar grátis</a>
-  </div>
-  <div class="card price hl">
-   <span class="tag" data-p="anualDesconto">MELHOR PREÇO</span>
-   <h3>Premium anual</h3><div class="v" data-p="anualMes">R$ 4,99/mês</div><div class="small">cobrado <span data-p="anual">R$ 59,90/ano</span></div>
-   <ul><li>Tudo do plano grátis</li><li>Dieta e treino com IA</li><li>Treino guiado com cargas e descanso</li><li>Fotos de evolução</li><li>Estatísticas de 30, 90 e 365 dias</li><li>Até 3 aparelhos</li></ul>
-   <a class="btn" data-buy="anual" href="index.html?premium=1">Assinar anual</a>
-  </div>
-  <div class="card price">
-   <h3>Premium mensal</h3><div class="v" data-p="mensal">R$ 9,90/mês</div><div class="small">cancele quando quiser</div>
-   <ul><li>Tudo do Premium</li><li>Sem fidelidade</li><li>Até 3 aparelhos</li></ul>
-   <a class="btn sec" data-buy="mensal" href="index.html?premium=1">Assinar mensal</a>
-  </div>
+<section id="oferta" style="text-align:center">
+ <div class="eyebrow">Oferta</div>
+ <h2>Comece grátis. Continue por menos que um lanche.</h2>
+ <div class="card offer" id="offer0">
+  <span class="tag">MAIS VENDIDO</span>
+  <h3 data-o="titulo">Acesso vitalício</h3>
+  <div class="de" data-o="de">R$ 59,90</div>
+  <div class="v" data-o="preco">R$ 27,90</div>
+  <div class="small" data-o="nota">pagamento único · preço de lançamento</div>
+  <ul><li>Desafio 30 Dias completo (e quantos quiser refazer)</li><li>Dieta e treino montados por IA</li><li>Treino guiado com cargas e descanso</li><li>Fotos de evolução e estatísticas completas</li><li>Até 3 aparelhos</li><li>Todas as atualizações futuras</li></ul>
+  <a class="btn big" data-buy="0" href="index.html?premium=1">Quero o acesso</a>
+  <div class="small" style="margin-top:10px">Pix, cartão ou boleto</div>
  </div>
- <p class="small" style="margin-top:14px">Pagamento por Pix, cartão ou boleto em plataforma segura. Garantia de 7 dias: não gostou, devolvemos seu dinheiro.</p>
+ <div class="more" id="more"></div>
+ <div class="guarantee card"><b>🛡️</b><div><b style="font-size:17px">Garantia de 7 dias</b><div class="small">Não gostou? Peça o reembolso em até 7 dias e devolvemos 100% do valor. Sem perguntas.</div></div></div>
 </section>
 
 <section>
  <div class="eyebrow">Dúvidas</div>
  <h2>Perguntas frequentes</h2>
- <details><summary>Preciso baixar em alguma loja?</summary><p>Não. É um app web instalável: abra no navegador do celular e toque em "Adicionar à tela inicial" (no iPhone, pelo botão Compartilhar do Safari). Ele ganha ícone e abre em tela cheia, como qualquer app.</p></details>
- <details><summary>Funciona sem internet?</summary><p>Sim. Todos os registros funcionam offline. Só a IA e o mapa precisam de internet.</p></details>
- <details><summary>Onde ficam os meus dados?</summary><p>No seu próprio aparelho. Nós não guardamos o que você registra. Recomendamos fazer backup pelo Perfil de vez em quando.</p></details>
- <details><summary>Como ativo o Premium depois de pagar?</summary><p>No app, abra Perfil → Premium → "Já comprei: ativar" e digite o e-mail usado na compra. Pagamentos por Pix e cartão são liberados em poucos minutos; boleto, após a compensação.</p></details>
- <details><summary>Posso usar em mais de um celular?</summary><p>Sim, o Premium vale para até 3 aparelhos com o mesmo e-mail.</p></details>
- <details><summary>A IA substitui nutricionista ou personal?</summary><p>Não. Ela dá orientações gerais para começar. Para condições de saúde específicas, procure um profissional.</p></details>
- <details><summary>Como cancelo?</summary><p>Pela própria plataforma de pagamento, a qualquer momento. O Premium continua até o fim do período já pago.</p></details>
+ <details><summary>Preciso baixar em alguma loja?</summary><p>Não. Abra o link no navegador do celular e toque em "Adicionar à tela inicial" (no iPhone, pelo botão Compartilhar do Safari). Ele ganha ícone e abre em tela cheia, como qualquer app.</p></details>
+ <details><summary>É pagamento único mesmo?</summary><p>Sim. No acesso vitalício você paga uma vez e usa para sempre, sem mensalidade.</p></details>
+ <details><summary>Como recebo o acesso depois de pagar?</summary><p>No app, toque em Perfil → Premium → "Já comprei: ativar" e digite o e-mail usado na compra. Pix e cartão liberam em minutos.</p></details>
+ <details><summary>Funciona sem internet?</summary><p>Sim. Os registros e o desafio funcionam offline. Só a IA e o mapa precisam de internet.</p></details>
+ <details><summary>Sou iniciante / estou acima do peso. Serve para mim?</summary><p>Sim. As metas são calculadas para o seu corpo e os treinos têm versão para casa. Se você tem alguma condição de saúde, converse com seu médico antes de começar.</p></details>
+ <details><summary>Onde ficam meus dados?</summary><p>No seu próprio celular. Nós não vemos o que você registra.</p></details>
 </section>
 
 <section style="text-align:center">
- <h2>Comece hoje. Seu eu de daqui a 90 dias agradece.</h2>
- <div class="cta" style="justify-content:center"><a class="btn" href="index.html">Começar grátis agora</a></div>
+ <h2>Daqui a 30 dias você vai agradecer por ter começado hoje.</h2>
+ <div class="cta" style="justify-content:center"><a class="btn" href="index.html">Começar o dia 1 grátis</a></div>
 </section>
 
 <footer>
  <div><a href="termos.html">Termos de uso</a><a href="privacidade.html">Privacidade</a><a data-support href="#" hidden>Suporte</a></div>
  <div style="margin-top:10px">© <span id="y"></span> Meu Controle de Vida · <span data-seller></span></div>
+ <div style="margin-top:10px;font-size:12px">Resultados variam de pessoa para pessoa. O app traz orientações gerais e não substitui acompanhamento médico, nutricional ou de educação física.</div>
 </footer>
 </div>
+<div class="sticky"><a class="btn big" href="index.html">Começar grátis</a></div>
 <script src="config.js"></script>
 <script>
-(function(){var C=window.MCV||{},P=C.PRICE||{};
-document.querySelectorAll('[data-p]').forEach(function(e){if(P[e.dataset.p])e.textContent=P[e.dataset.p]});
-document.querySelectorAll('[data-buy]').forEach(function(e){var u=(C.CHECKOUT||{})[e.dataset.buy];if(u){e.href=u;e.target='_blank';e.rel='noopener'}});
-document.querySelectorAll('[data-trial]').forEach(function(e){e.textContent=C.TRIAL_DAYS||7});
-var s=document.querySelector('[data-support]');if(C.SUPPORT_WHATSAPP){s.href='https://wa.me/'+C.SUPPORT_WHATSAPP;s.hidden=false}else if(C.SUPPORT_EMAIL){s.href='mailto:'+C.SUPPORT_EMAIL;s.hidden=false}
+(function(){var C=window.MCV||{},O=C.OFFERS||[],WA=C.SUPPORT_WHATSAPP||'';
+function href(o){return o.link||(WA?'https://wa.me/'+WA+'?text='+encodeURIComponent('Oi! Quero comprar o Meu Controle de Vida ('+o.titulo+' por '+o.preco+') via Pix.'):'index.html?premium=1')}
+function setLink(a,o){a.href=href(o);if(a.href.indexOf('http')===0&&a.href.indexOf(location.host)<0){a.target='_blank';a.rel='noopener'}}
+var d=document.getElementById('days'),h='';for(var i=1;i<=30;i++)h+='<div class="'+(i<=12?'ok':'')+'">'+(i<=12?'✓':i)+'</div>';d.innerHTML=h;
+if(O[0]){document.querySelectorAll('#offer0 [data-o]').forEach(function(e){var v=O[0][e.dataset.o];if(v)e.textContent=v;else e.style.display='none'});setLink(document.querySelector('[data-buy="0"]'),O[0])}
+var m=document.getElementById('more');O.slice(1).forEach(function(o){var a=document.createElement('a');a.className='btn sec';a.textContent=o.titulo+' · '+o.preco+(o.nota?' ('+o.nota+')':'');setLink(a,o);m.appendChild(a)});
+var s=document.querySelector('[data-support]');if(WA){s.href='https://wa.me/'+WA;s.hidden=false}else if(C.SUPPORT_EMAIL){s.href='mailto:'+C.SUPPORT_EMAIL;s.hidden=false}
 var sl=C.SELLER||{};document.querySelector('[data-seller]').textContent=(sl.nome||'')+(sl.doc?' · '+sl.doc:'');
 document.getElementById('y').textContent=new Date().getFullYear();})();
 </script>

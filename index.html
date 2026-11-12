@@ -8,7 +8,7 @@
 <title>Meu Controle de Vida</title>
 <meta name="description" content="Alimentação, água, treino, sono, peso e caminhadas em um só app. Funciona offline.">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
@@ -137,6 +137,10 @@ input,select,textarea{width:100%;padding:12px;border-radius:12px;border:1px soli
 .ach .ic{width:24px;height:24px;margin:0;color:var(--cc)}
 .ach b{display:block;font-size:14px}.ach span{font-size:12px;color:var(--mut)}
 input.pin{text-align:center;letter-spacing:.5em;font-size:24px}
+.chc{background:linear-gradient(135deg,#a8f56a,#5fd635)!important;color:#0b1a07!important;border:0!important}.chc .ic{color:#0b1a07}
+.chg{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.chg div{aspect-ratio:1;border-radius:10px;display:grid;place-items:center;font-size:13px;font-weight:800;background:var(--card2);color:var(--mut)}
+.chg .ok{background:var(--acc);color:#0b1a07}.chg .td{outline:2px solid var(--acc);color:var(--txt)}.chg .no{background:#ff6b6b22;color:var(--red)}
 </style>
 </head>
 <body>
@@ -318,8 +322,9 @@ down:'<path d="M12 4v11M7 11l5 5 5-5M4 20h16"/>',up:'<path d="M12 16V5M7 9l5-5 5
 ruler:'<path d="M3 15L15 3l6 6L9 21z"/><path d="M7 11l2 2M10 8l2 2M13 5l2 2"/>',
 camera:'<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
 timer:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/>',
-edit:'<path d="M4 20h4l11-11-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>'};
-const EM={'🏠':'home','📓':'book','🏃':'run','🚶':'walk','📊':'chart','👤':'user','🌙':'moon','☀️':'sun','👋':'spark','💧':'drop','🔥':'flame','💪':'dumbbell','🍎':'apple','🗺️':'map','🚿':'shower','🥤':'cup','🍽️':'fork','🏆':'trophy','🔒':'lock','🔎':'search','📈':'trend','📅':'calendar','⚖️':'scale','📍':'pin','🪥':'brush','🦷':'tooth','🧴':'bottle','💈':'scissors','🪒':'razor','👂':'ear','💅':'hand','✨':'spark','🧼':'lotion','✅':'check','✕':'x','‹':'left','›':'right','▶':'play','⏸':'pause','■':'stop','⬇':'down','⬆':'up','📏':'ruler','📷':'camera','⏱':'timer','✎':'edit'};
+edit:'<path d="M4 20h4l11-11-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
+share:'<path d="M12 15V3M7 8l5-5 5 5"/><path d="M5 12v8h14v-8"/>'};
+const EM={'🏠':'home','📓':'book','🏃':'run','🚶':'walk','📊':'chart','👤':'user','🌙':'moon','☀️':'sun','👋':'spark','💧':'drop','🔥':'flame','💪':'dumbbell','🍎':'apple','🗺️':'map','🚿':'shower','🥤':'cup','🍽️':'fork','🏆':'trophy','🔒':'lock','🔎':'search','📈':'trend','📅':'calendar','⚖️':'scale','📍':'pin','🪥':'brush','🦷':'tooth','🧴':'bottle','💈':'scissors','🪒':'razor','👂':'ear','💅':'hand','✨':'spark','🧼':'lotion','✅':'check','✕':'x','‹':'left','›':'right','▶':'play','⏸':'pause','■':'stop','⬇':'down','⬆':'up','📏':'ruler','📷':'camera','⏱':'timer','✎':'edit','📤':'share'};
 const svg=n=>`<svg class=ic viewBox="0 0 24 24" fill=none stroke=currentColor stroke-width=1.9 stroke-linecap=round stroke-linejoin=round aria-hidden=true>${IC[n]}</svg>`;
 const EMO_ANY=/[\u{1F300}-\u{1FAFF}\u2600-\u27BF\u25A0-\u25FF\u2B00-\u2BFF]\uFE0F?/gu;
 const emoRe=new RegExp('('+Object.keys(EM).map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')\uFE0F?','g');
@@ -338,7 +343,7 @@ const longDate=k=>parseKey(k).toLocaleDateString('pt-BR',{weekday:'long',day:'2-
 function render(){
  applyTheme();
  const back=tab==='home'?'':'<div style="margin-bottom:14px"><button class=chip data-a=tab data-v=home>‹ Início</button></div>';
- view.innerHTML=emo(back+wrap({home:vHome,food:vFood,drink:vDrink,work:vWork,guided:vGuided,walk:vWalk,hyg:vHyg,sleep:vSleep,weight:vWeight,priv:vPriv,data:vData,profile:vProfile}[tab]()));
+ view.innerHTML=emo(back+wrap({home:vHome,desafio:vDesafio,food:vFood,drink:vDrink,work:vWork,guided:vGuided,walk:vWalk,hyg:vHyg,sleep:vSleep,weight:vWeight,priv:vPriv,data:vData,profile:vProfile}[tab]()));
  if(tab!=='walk'&&map){map.remove();map=null;meMark=null}
  if(tab==='walk')initMap();
  if(tab==='weight')loadPhotos();
@@ -352,7 +357,7 @@ const bd=backupDue(),sw=streak(okWater),st=streak(okTrain),sf=streak(okFull);
 return `<div class=top><div class=avatar>${esc(ini)}</div><div class=t><div class=eyebrow>Seu espaço pessoal</div><h2>${esc(p.name)}</h2></div><button class=ibtn data-a=tab data-v=profile style="margin-right:8px">👤</button><button class=ibtn data-a=pick style="margin-right:8px">📅</button><input type=date id=dp value="${cur}" max="${today()}" data-goto=1 style="opacity:0;position:absolute;width:1px;height:1px;padding:0;border:0;pointer-events:none"><button class=ibtn data-a=theme>${p.theme==='light'?'🌙':'☀️'}</button></div>
 <div class=eyebrow>${hi}</div><h1 style="font-size:28px;margin:6px 0 4px">Vamos evoluir? 👋</h1><div class=mut style="text-transform:capitalize">${longDate(k)}</div>${k!==today()?'<button class="btn sec sm2" data-a=hoje style="margin:8px 0 0;width:auto;padding:9px 16px">Voltar para hoje</button>':''}
 ${bd?`<div class="card c-weight" style="margin:16px 0 0"><div class=ch><h3>⬇ Faça um backup</h3></div><div class="sm mut">${db.profile.lastBackup?`Faz ${bd} dias desde o último backup.`:'Você ainda não fez nenhum backup.'} Se o navegador limpar os dados, tudo se perde.</div><div class=two style="margin-top:10px"><button class=btn data-a=export>Fazer agora</button><button class="btn sec" data-a=snooze>Depois</button></div></div>`:''}
-${proBanner()}
+${chHomeCard()}${proBanner()}
 <div class=hero><div class=eyebrow>Visão geral</div><h2>Seu dia em foco</h2><div class="sm mut">Acompanhe seus hábitos e sua evolução.</div>
 <div class=ringrow><div class=ring><svg width=110 height=110 viewBox="0 0 110 110"><circle cx=55 cy=55 r=48 fill=none stroke="#ffffff22" stroke-width=10 /><circle cx=55 cy=55 r=48 fill=none stroke="var(--acc)" stroke-width=10 stroke-linecap=round stroke-dasharray="${C}" stroke-dashoffset="${C*(1-pr/100)}"/></svg><div class=n><div>${pr}%<small>DO DIA</small></div></div></div>
 <div><b>${pr?'Continue assim!':'Seu progresso começa aqui'}</b><div class="sm mut" style="margin-top:6px">${pr?`${nf(t.water)} ml de água · ${t.hy} hábitos de higiene`:'Registre suas atividades para acompanhar seus resultados.'}</div></div></div></div>
@@ -366,7 +371,7 @@ ${proBanner()}
 </div>
 <div class=eyebrow style="margin-top:14px">Organize sua rotina</div><h2 style="margin:4px 0 12px">Telas do app</h2>
 <div class=grid2>
-${[['🍎','Alimentação','Refeições e nutrientes','food'],['🥤','Bebidas','Água, refri, energético','drink'],['💪','Exercício','Treinos e treino guiado','work'],['🚶','Caminhada','Mapa, GPS e ritmo','walk'],['🚿','Higiene','Hábitos diários','hyg'],['🌙','Sono','Horas e descanso','sleep'],['⚖️','Peso e medidas','Peso, medidas e fotos','weight'],['🔒','Privado','Só você vê','priv'],['📊','Estatísticas','Semana, mês e conquistas','data']].map(([e,tt,sb,v],i)=>`<button class="tile t${i%6+1}" data-a=tab data-v=${v}${v==='data'?' style="grid-column:1/-1;min-height:90px"':''}>${e}<b>${tt}</b><span>${sb}</span></button>`).join('')}
+${[['🏆','Desafio 30 dias','Sua missão de hoje','desafio'],['🍎','Alimentação','Refeições e nutrientes','food'],['🥤','Bebidas','Água, refri, energético','drink'],['💪','Exercício','Treinos e treino guiado','work'],['🚶','Caminhada','Mapa, GPS e ritmo','walk'],['🚿','Higiene','Hábitos diários','hyg'],['🌙','Sono','Horas e descanso','sleep'],['⚖️','Peso e medidas','Peso, medidas e fotos','weight'],['🔒','Privado','Só você vê','priv'],['📊','Estatísticas','Semana, mês e conquistas','data']].map(([e,tt,sb,v],i)=>`<button class="tile t${i%6+1}" data-a=tab data-v=${v}${v==='data'?' style="grid-column:1/-1;min-height:90px"':''}>${e}<b>${tt}</b><span>${sb}</span></button>`).join('')}
 </div>`}
 
 /* ---- TELAS DO DIA (uma por assunto) ---- */
@@ -374,7 +379,7 @@ function dayNav(){return cur===today()?'':`<div class="sm mut" style="margin:0 0
 const sumRow=a=>`<div class=sum>${a.map(([v,l])=>`<div><b>${v}</b><span>${l}</span></div>`).join('')}</div>`;
 const title=(i,t,s)=>`<h1 style="font-size:24px;margin-bottom:4px">${i} ${t}</h1><div class="mut sm" style="margin-bottom:14px">${s}</div>`;
 const hero=(i,t,sb,big,lbl,pct)=>`<div class=shero><div class=hr><div class=bi>${i}</div><div style="flex:1"><h1>${t}</h1><div class="sm mut">${sb}</div></div></div>${big!=null?`<div class=hb><b>${big}</b><span>${lbl}</span></div>`:''}${pct!=null?`<div class=progbar style="margin-top:12px"><i style="width:${Math.min(Math.max(pct,0),100)}%"></i></div>`:''}</div>`;
-const SC={food:'c-food',drink:'c-drink',work:'c-work',guided:'c-work',walk:'c-map',hyg:'c-hyg',sleep:'c-sleep',weight:'c-weight',priv:'c-priv',data:'c-act'};
+const SC={desafio:'c-act',food:'c-food',drink:'c-drink',work:'c-work',guided:'c-work',walk:'c-map',hyg:'c-hyg',sleep:'c-sleep',weight:'c-weight',priv:'c-priv',data:'c-act'};
 const wrap=h=>tab==='home'||tab==='profile'?h:'<div class="scr '+SC[tab]+'">'+h+'</div>';
 const QD=[['💧','Água 250 ml','agua',250],['💧','Água 500 ml','agua',500],['💧','Água 1 L','agua',1000],['🥤','Refri 350 ml','refri',350],['🔥','Energético 250 ml','energ',250],['🍎','Suco 200 ml','suco',200]];
 const FTIPS={
@@ -595,6 +600,88 @@ ${proCard()}
 <div class=chips style="margin-top:10px"><a class=chip href="termos.html" target=_blank>Termos de uso</a><a class=chip href="privacidade.html" target=_blank>Privacidade</a>${SUPPORT_EMAIL?`<a class=chip href="mailto:${esc(SUPPORT_EMAIL)}">Suporte</a>`:''}${CFG.SUPPORT_WHATSAPP?`<a class=chip href="https://wa.me/${esc(CFG.SUPPORT_WHATSAPP)}" target=_blank rel=noopener>WhatsApp</a>`:''}</div>
 <button class="btn sec sm2" data-a=testAI>Testar conexão com o servidor</button><div id=aitest class="sm mut" style="margin-top:8px"></div></div>`}
 
+/* ============ DESAFIO 30 DIAS ============ */
+const CH_FREE=3;
+const CH_M=[ // missão extra de cada dia: [título, como fazer]
+['Foto do dia 1','Tire uma foto de frente e de lado (em Peso e medidas) e anote seu peso. Daqui a 30 dias você vai comparar.'],
+['Prato colorido','Monte almoço e jantar com pelo menos 3 cores diferentes de comida.'],
+['Sem refri','Hoje nada de refrigerante ou suco de caixinha. Água, café ou chá sem açúcar.'],
+['10 mil passos','Caminhe pelo menos 30 minutos seguidos (use a Caminhada com GPS).'],
+['Desliga a tela','Fique 30 minutos sem celular antes de dormir.'],
+['Proteína no café','Coloque uma proteína no café da manhã: ovo, queijo, leite ou iogurte.'],
+['Prancha','Faça 3 pranchas de 30 segundos. Anote quanto aguentou.'],
+['Semana 1 feita','Pese-se e compare com o dia 1. Comemore cada grama e cada hábito.'],
+['Garrafa sempre perto','Ande o dia todo com uma garrafa de água à vista.'],
+['Escada no lugar do elevador','Use escadas sempre que puder hoje.'],
+['Jantar leve','Jante pelo menos 2 horas antes de dormir, com mais verdura e proteína.'],
+['Alongamento','Alongue o corpo por 10 minutos ao acordar ou antes de dormir.'],
+['Sem doce','Um dia inteiro sem doce. Se bater vontade, coma uma fruta.'],
+['Treino em dobro','Faça o treino do dia e mais 15 minutos de caminhada.'],
+['Metade do caminho','Tire novas fotos e compare com o dia 1. Você já mudou mais do que imagina.'],
+['Coma devagar','Faça todas as refeições sem tela e mastigando devagar.'],
+['Dormir cedo','Deite 30 minutos mais cedo que o normal.'],
+['Feira','Coma pelo menos 2 frutas e 1 salada hoje.'],
+['100 agachamentos','Faça 100 agachamentos no dia, divididos como quiser.'],
+['Menos sal e fritura','Nada de fritura hoje. Prefira assado, cozido ou grelhado.'],
+['Semana 3','Meça cintura e abdômen. Compare com a primeira medida.'],
+['Respira','Faça 5 minutos de respiração lenta (4 segundos inspirando, 6 soltando).'],
+['Marmita','Prepare sua comida de amanhã hoje à noite.'],
+['Ritmo','Na caminhada de hoje, tente um ritmo mais rápido que o do dia 4.'],
+['Gratidão','Escreva 3 coisas que melhoraram desde o dia 1.'],
+['Desafio de flexões','Faça o máximo de flexões que conseguir (pode apoiar o joelho). Anote.'],
+['Zero álcool','Um dia sem bebida alcoólica. Bata a meta de água.'],
+['Ajude alguém','Chame um amigo para treinar ou caminhar com você.'],
+['Reta final','Treine com tudo hoje. Amanhã é o último dia!'],
+['Dia 30','Tire as fotos finais, pese-se e compare com o dia 1. Você conseguiu!']];
+const chDay=(k=today())=>{const s=db.profile.chStart;if(!s)return 0;const n=daysBetween(s,k)+1;return n<1?0:n};
+const chKey=n=>shift(db.profile.chStart,n-1);
+function chChecks(k){const t=totals(k),p=P(),d=peek(k);return[
+ ['💧','Beber '+nf(p.waterGoal)+' ml de água',t.water>=p.waterGoal,'drink'],
+ ['🍎','Registrar 3 refeições',new Set(d.foods.map(x=>x.meal)).size>=3,'food'],
+ ['💪','Treinar ou caminhar',d.workouts.length>0,'work'],
+ ['🌙','Registrar o sono',t.sl>0,'sleep'],
+ ['✨','Missão do dia',!!(db.profile.chDone||{})[k],null]]}
+const chOk=k=>chChecks(k).filter(x=>x[2]).length>=4;
+const chLocked=n=>n>CH_FREE&&!hasPremium();
+function chStats(){const n=Math.min(chDay(),30);let done=0;for(let i=1;i<=n;i++)if(chOk(chKey(i)))done++;return{n,done}}
+function chGrid(n){let h='<div class=chg>';for(let i=1;i<=30;i++){const k=chKey(i),st=i>n?'fu':chOk(k)?'ok':i===n?'td':'no';h+=`<div class="${st}">${st==='ok'?'✓':i}</div>`}return h+'</div>'}
+function chHomeCard(){const n=chDay();
+ if(!n)return `<div class="card chc" data-a=tab data-v=desafio style="cursor:pointer;margin:16px 0 0"><div class=eyebrow style="color:#0b1a07">Novo</div><h2 style="margin:4px 0 6px">🏆 Desafio 30 Dias</h2><div class=sm>Uma missão por dia para mudar seu corpo e sua rotina. Comece hoje, os 3 primeiros dias são grátis.</div><button class=btn style="margin-top:12px;background:#0b1a07;color:var(--acc)">Quero começar</button></div>`;
+ if(n>30){const st=chStats();return `<div class="card chc" data-a=tab data-v=desafio style="cursor:pointer;margin:16px 0 0"><h2 style="margin:0 0 6px">🏆 Desafio concluído!</h2><div class=sm>${st.done} de 30 dias completos. Toque para ver seu certificado.</div></div>`}
+ const c=chChecks(today()),ok=c.filter(x=>x[2]).length;
+ return `<div class="card chc" data-a=tab data-v=desafio style="cursor:pointer;margin:16px 0 0"><div class=eyebrow style="color:#0b1a07">Desafio 30 Dias</div><h2 style="margin:4px 0 6px">Dia ${n} de 30</h2><div class=sm>${chLocked(n)?'🔒 Libere o desafio completo para continuar.':`Hoje: ${ok} de 5 tarefas · ${CH_M[n-1][0]}`}</div><div class=progbar style="margin-top:10px;background:#0b1a0733"><i style="width:${n/30*100}%;background:#0b1a07"></i></div></div>`}
+function vDesafio(){const n=chDay();
+ let h=hero('🏆','Desafio 30 Dias','Uma missão por dia. Complete 4 de 5 tarefas para ganhar o dia.');
+ if(!n)return h+`<div class=card><h3 style="margin-top:0">Como funciona</h3><ul style="margin:0;padding-left:18px;line-height:1.7"><li>Todo dia você tem 4 tarefas básicas (água, refeições, treino e sono) e 1 missão especial.</li><li>Fez 4 das 5? O dia fica verde.</li><li>Compartilhe seu progresso nos stories e chame alguém para fazer junto.</li><li>No dia 30, compare suas fotos e medidas com o dia 1.</li></ul><button class=btn style="margin-top:14px" data-a=chStart>Começar hoje</button><div class="sm mut" style="margin-top:8px">Dias 1 a ${CH_FREE} grátis. Dica: responda o questionário no Perfil para ajustar suas metas.</div></div>`;
+ const st=chStats();
+ if(n>30)return h+`<div class="card chc"><h2 style="margin:0 0 6px">🏆 Você terminou!</h2><div class=sm>${st.done} de 30 dias completos.</div></div><div class=card>${chGrid(30)}</div><button class=btn data-a=chShare>📤 Compartilhar certificado</button><button class="btn sec sm2" data-a=chReset>Começar um novo desafio</button>`;
+ h+=sumRow([[n+'/30','Dia atual'],[st.done,'Dias completos'],[Math.max(0,30-n),'Faltam']]);
+ h+=`<div class=card>${chGrid(n)}</div>`;
+ if(chLocked(n))return h+`<div class="card chc"><h2 style="margin:0 0 6px">🔒 Continue o desafio</h2><div class=sm>Você completou os dias grátis. Libere os 30 dias, a IA, o treino guiado e as fotos de evolução com pagamento único.</div><button class=btn style="margin-top:12px;background:#0b1a07;color:var(--acc)" data-a=paywall>Liberar agora</button></div>`;
+ const k=today(),c=chChecks(k),m=CH_M[n-1];
+ h+=`<div class=card><div class=ch><h3>✅ Tarefas de hoje</h3><span class="sm mut">${c.filter(x=>x[2]).length}/5</span></div>${c.map(([e,l,ok,t])=>`<div class=item ${t?`data-a=tab data-v=${t} style="cursor:pointer"`:''}><div class=i><b style="${ok?'':'opacity:.75'}">${e} ${l}</b></div><span style="font-weight:800;color:${ok?'var(--acc)':'var(--mut)'}">${ok?'✓':'›'}</span></div>`).join('')}</div>`;
+ h+=`<div class="card chc"><div class=eyebrow style="color:#0b1a07">Missão do dia ${n}</div><h2 style="margin:4px 0 6px">${m[0]}</h2><div class=sm>${m[1]}</div><button class=btn style="margin-top:12px;background:#0b1a07;color:var(--acc)" data-a=chMission>${(db.profile.chDone||{})[k]?'✓ Missão cumprida (desfazer)':'Concluí a missão'}</button></div>`;
+ h+=`<button class=btn data-a=chShare>📤 Postar meu dia ${n} nos stories</button><button class="btn sec sm2" data-a=chReset>Reiniciar desafio</button>`;
+ return h}
+/* imagem para stories (1080x1920) */
+async function chShare(){const n=Math.min(chDay(),31),fin=n>30,st=chStats(),c=chChecks(today());
+ const cv=document.createElement('canvas');cv.width=1080;cv.height=1920;const g=cv.getContext('2d');
+ const gr=g.createLinearGradient(0,0,1080,1920);gr.addColorStop(0,'#14281c');gr.addColorStop(1,'#050806');g.fillStyle=gr;g.fillRect(0,0,1080,1920);
+ const T=(t,x,y,sz,col='#eef5f0',w='800',al='center')=>{g.font=`${w} ${sz}px system-ui,-apple-system,Roboto,sans-serif`;g.fillStyle=col;g.textAlign=al;g.fillText(t,x,y)};
+ try{const im=new Image();im.src='icon-512.png';await im.decode();g.save();g.beginPath();g.roundRect(440,130,200,200,44);g.clip();g.drawImage(im,440,130,200,200);g.restore()}catch(e){}
+ T('DESAFIO 30 DIAS',540,420,46,'#8ef04a','800');
+ T(fin?'CONCLUÍDO!':'DIA '+n,540,600,fin?150:220);
+ T(fin?st.done+' de 30 dias completos':'de 30',540,fin?700:690,52,'#9db0a6','600');
+ const x0=102,cell=150,gap=12;for(let i=0;i<30;i++){const r=Math.floor(i/6),cl=i%6,x=x0+cl*(cell-gap+gap)-0,y=780+r*(cell-10);const k=chKey(i+1),ok=i+1<=Math.min(n,30)&&chOk(k),fu=i+1>Math.min(n,30);
+  g.fillStyle=ok?'#8ef04a':fu?'#ffffff12':i+1===n?'#ffffff30':'#ff6b6b33';g.beginPath();g.roundRect(x,y,cell-gap*2,cell-gap*2-10,22);g.fill();
+  T(ok?'✓':String(i+1),x+(cell-gap*2)/2,y+(cell-gap*2)/2+14,46,ok?'#0b1a07':'#eef5f0','800')}
+ if(!fin){const ok=c.filter(x=>x[2]).length;T(ok>=4?'Dia completo ✅':'Hoje: '+ok+' de 5 tarefas',540,1590,56,ok>=4?'#8ef04a':'#eef5f0','800');T('Missão: '+CH_M[n-1][0],540,1665,42,'#9db0a6','600')}
+ T('Faça comigo: '+location.host,540,1830,40,'#8ef04a','700');
+ const blob=await new Promise(r=>cv.toBlob(r,'image/png')),file=new File([blob],`desafio-dia-${n}.png`,{type:'image/png'});
+ const text=fin?'Terminei o Desafio 30 Dias! 🏆':'Dia '+n+' de 30 do Desafio 30 Dias ✅ Bora fazer junto?',url=location.origin+location.pathname.replace(/[^/]*$/,'')+'vendas.html';
+ try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],text:text+' '+url});return}}catch(e){if(e.name==='AbortError')return}
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;a.click();toast('Imagem salva. Poste nos seus stories!')}
+
 /* ============ MODAIS ============ */
 const opts=(name,list,cur,cls='')=>`<input type=hidden name=${name} value="${esc(cur)}"><div class="opts ${cls}">${list.map(([v,l,ic])=>`<button type=button class="opt ${String(v)===String(cur)?'on':''}" data-a=pickc data-n=${name} data-v="${esc(v)}">${ic||''}<span>${l}</span></button>`).join('')}</div>`;
 const choice=(path,list,cur,cls='')=>`<div class="opts ${cls}">${list.map(([v,l,ic,x])=>`<button class="opt ${x||''} ${String(v)===String(cur??'')?'on':''}" data-a=setv data-p=${path} data-v="${esc(v)}">${ic||''}<span>${l}</span></button>`).join('')}</div>`;
@@ -616,9 +703,10 @@ function perfilParaIA(){const p=P(),q=db.profile;return{sexo:p.sex,idade:p.age,a
 /* Toda a configuração de vendas fica em config.js */
 const CFG=window.MCV||{};
 const API=CFG.API||'';
-const CHECKOUT=CFG.CHECKOUT||{};
-const PRICE=Object.assign({mensal:'',anual:'',anualMes:''},CFG.PRICE);
-const TRIAL_DAYS=CFG.TRIAL_DAYS||7;
+const OFFERS=CFG.OFFERS||[];
+const TRIAL_DAYS=CFG.TRIAL_DAYS??3;
+const WA=CFG.SUPPORT_WHATSAPP||'';
+const offerHref=o=>o.link||(WA?`https://wa.me/${WA}?text=${encodeURIComponent('Oi! Quero comprar o Meu Controle de Vida Premium ('+o.titulo+' por '+o.preco+') via Pix.')}`:'');
 const SUPPORT_EMAIL=CFG.SUPPORT_EMAIL||'';
 const LS=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return null}};
 const devId=(()=>{let d=LS('mcv_dev');if(!d){d=(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2));LS('mcv_dev',d)}return d})();
@@ -642,25 +730,24 @@ async function api(path,body,ms=20000){
 async function licRefresh(force){if(!lic||!API)return;if(!force&&lic.checked&&Date.now()-lic.checked<3*864e5)return;
  try{const j=await api('/verify',{token:lic.token});saveLic({...lic,...j,checked:Date.now()})}
  catch(e){if(e.status===401||e.status===403){saveLic(null);render();toast('Sua assinatura Premium não está mais ativa')}}}
-const PRO_FEATS=[['✨','Dieta e treino com IA','Planos sob medida para o seu corpo e objetivo'],['▶','Treino guiado','Séries, cargas e descanso cronometrado'],['📷','Fotos de evolução','Compare seu antes e depois'],['📊','Estatísticas completas','30 dias, 90 dias e o ano inteiro'],['💚','Apoie o app','Novos recursos todo mês']];
-const PRO_WHY={ia:'A IA é um recurso Premium.',guiado:'O treino guiado é um recurso Premium.',fotos:'As fotos de evolução são um recurso Premium.',historico:'O histórico além de 7 dias é Premium.'};
-function mPaywall(what){const buy=(k,l,sub,hl)=>CHECKOUT[k]?`<a class="btn ${hl?'':'sec'}" style="display:block;text-align:center;text-decoration:none;margin-top:8px" href="${esc(CHECKOUT[k])}" target=_blank rel=noopener>${l}<div style="font-size:12px;font-weight:500;opacity:.85">${sub}</div></a>`:'';
- const any=CHECKOUT.mensal||CHECKOUT.anual;
- openModal(`<h3>💚 Meu Controle de Vida Premium</h3>${what&&PRO_WHY[what]?`<div class="sm mut" style="margin-top:4px">${PRO_WHY[what]} ${trialLeft()?'':'Seu teste grátis terminou.'}</div>`:''}
+const PRO_FEATS=[['🏆','Desafio 30 Dias completo','Uma missão por dia, do dia 1 ao 30'],['✨','Dieta e treino com IA','Planos sob medida para o seu corpo e objetivo'],['▶','Treino guiado','Séries, cargas e descanso cronometrado'],['📷','Fotos de evolução','Compare seu antes e depois'],['📊','Estatísticas completas','30 dias, 90 dias e o ano inteiro']];
+const PRO_WHY={desafio:'O desafio completo é Premium.',ia:'A IA é um recurso Premium.',guiado:'O treino guiado é um recurso Premium.',fotos:'As fotos de evolução são um recurso Premium.',historico:'O histórico além de 7 dias é Premium.'};
+function mPaywall(what){const tl=trialLeft();
+ const btns=OFFERS.map((o,i)=>{const u=offerHref(o);return u?`<a class="btn ${i?'sec':''}" style="display:block;text-align:center;text-decoration:none;margin-top:8px" href="${esc(u)}" target=_blank rel=noopener>${esc(o.titulo)} · ${o.de?`<s style="opacity:.6;font-weight:500">${esc(o.de)}</s> `:''}${esc(o.preco)}<div style="font-size:12px;font-weight:500;opacity:.85">${esc(o.nota||'')}</div></a>`:''}).join('');
+ openModal(`<h3>💚 Meu Controle de Vida Premium</h3>${what&&PRO_WHY[what]?`<div class="sm mut" style="margin-top:4px">${PRO_WHY[what]} ${tl?'':'Seu teste grátis terminou.'}</div>`:''}
  <div style="margin:12px 0">${PRO_FEATS.map(([e,t,d])=>`<div class=ach><span style="font-size:20px;width:24px;text-align:center">${e}</span><div><b>${t}</b><span>${d}</span></div></div>`).join('')}</div>
- ${buy('anual','Anual · '+PRICE.anual,'equivale a '+PRICE.anualMes+' · melhor preço',1)}${buy('mensal','Mensal · '+PRICE.mensal,'cancele quando quiser')}
- ${any?'':'<div class="sm mut" style="margin:8px 0">As vendas ainda não foram abertas.</div>'}
+ ${btns||'<div class="sm mut" style="margin:8px 0">As vendas ainda não foram abertas.</div>'}
  <button type=button class="btn sec sm2" data-a=activate>Já comprei: ativar Premium</button>
- <div class="sm mut" style="margin-top:10px;text-align:center">Pagamento seguro por Pix, cartão ou boleto. <a href="termos.html" target=_blank style="color:var(--mut)">Termos</a> · <a href="privacidade.html" target=_blank style="color:var(--mut)">Privacidade</a></div>`)}
+ <div class="sm mut" style="margin-top:10px;text-align:center">Garantia de 7 dias ou seu dinheiro de volta. <a href="termos.html" target=_blank style="color:var(--mut)">Termos</a> · <a href="privacidade.html" target=_blank style="color:var(--mut)">Privacidade</a></div>`)}
 function mActivate(email){openModal(`<form data-form=activate><h3>Ativar Premium</h3><div class="sm mut" style="margin:6px 0 4px">Digite o e-mail usado na compra. Você pode usar o Premium em até 3 aparelhos.</div><label>E-mail da compra</label><input name=email type=email required autocomplete=email inputmode=email value="${esc(email||'')}"><div id=acterr class=sm style="color:var(--red);margin-top:8px"></div><button class=btn style="margin-top:12px">Ativar</button><button type=button class="btn sec sm2" data-a=close>Cancelar</button></form>`)}
 async function doActivate(f){const email=f.elements.email.value.trim().toLowerCase(),b=f.querySelector('button.btn'),er=$('#acterr');b.disabled=true;b.textContent='Verificando...';er.textContent='';
  try{const j=await api('/activate',{email});saveLic({...j,checked:Date.now()});closeModal();render();toast('Premium ativado! Obrigado pelo apoio')}
  catch(e){er.textContent=e.message;b.disabled=false;b.textContent='Ativar'}}
 function proCard(){const tl=trialLeft();
- if(isPro())return `<div class="card c-food"><div class=ch><h3>💚 Premium ativo</h3><span class=tag>${esc(lic.plan||'')}</span></div><div class="sm mut">${esc(lic.email||'')}${lic.exp?' · renova/expira em '+new Date(lic.exp).toLocaleDateString('pt-BR'):' · vitalício'}</div><div class=two style="margin-top:10px"><button class="btn sec" data-a=licCheck>Atualizar status</button><button class="btn sec" data-a=licOut>Sair deste aparelho</button></div></div>`;
- return `<div class="card c-food"><div class=ch><h3>💚 Premium</h3>${tl?`<span class=tag>TESTE: ${tl} DIA${tl>1?'S':''}</span>`:''}</div><div class="sm mut" style="margin-bottom:10px">${tl?`Você está no teste grátis de ${TRIAL_DAYS} dias com tudo liberado.`:'Seu teste grátis terminou. O registro do dia continua grátis para sempre.'} IA, treino guiado, fotos de evolução e estatísticas completas fazem parte do Premium.</div><button class=btn data-a=paywall>Conhecer o Premium</button><button class="btn sec sm2" data-a=activate>Já comprei: ativar</button></div>`}
+ if(isPro())return `<div class="card c-food"><div class=ch><h3>💚 Premium ativo</h3><span class=tag>${esc(lic.plan||'')}</span></div><div class="sm mut">${esc(lic.email||'')}${lic.exp?' · válido até '+new Date(lic.exp).toLocaleDateString('pt-BR'):' · vitalício'}</div><div class=two style="margin-top:10px"><button class="btn sec" data-a=licCheck>Atualizar status</button><button class="btn sec" data-a=licOut>Sair deste aparelho</button></div></div>`;
+ return `<div class="card c-food"><div class=ch><h3>💚 Premium</h3>${tl?`<span class=tag>TESTE: ${tl} DIA${tl>1?'S':''}</span>`:''}</div><div class="sm mut" style="margin-bottom:10px">${tl?`Você está no teste grátis de ${TRIAL_DAYS} dias com tudo liberado.`:'Seu teste grátis terminou. O registro do dia continua grátis para sempre.'} O desafio completo, a IA, o treino guiado, as fotos e as estatísticas completas fazem parte do Premium.</div><button class=btn data-a=paywall>Conhecer o Premium</button><button class="btn sec sm2" data-a=activate>Já comprei: ativar</button></div>`}
 function proBanner(){if(isPro())return '';const tl=trialLeft();
- return `<div class="card c-food" data-a=paywall style="margin:16px 0 0;cursor:pointer"><div class=ch><h3>${tl?`✨ Teste Premium: ${tl} dia${tl>1?'s':''} restante${tl>1?'s':''}`:'✨ Desbloqueie o Premium'}</h3><span style="color:var(--acc);font-weight:800">›</span></div><div class="sm mut">${tl?'Aproveite a IA, o treino guiado e as fotos de evolução.':'Dieta e treino com IA, treino guiado, fotos e estatísticas completas a partir de '+PRICE.anualMes+'.'}</div></div>`}
+ return `<div class="card c-food" data-a=paywall style="margin:16px 0 0;cursor:pointer"><div class=ch><h3>${tl?`✨ Teste Premium: ${tl} dia${tl>1?'s':''} restante${tl>1?'s':''}`:'✨ Desbloqueie o Premium'}</h3><span style="color:var(--acc);font-weight:800">›</span></div><div class="sm mut">${tl?'Aproveite a IA, o treino guiado, as fotos e o desafio completo.':'Desafio 30 Dias completo, dieta e treino com IA, treino guiado e fotos'+(OFFERS[0]?' por '+OFFERS[0].preco+(OFFERS[0].plano==='vitalicio'?', pagamento único':'')+'.':'.')}</div></div>`}
 async function aiCall(kind,ms=60000){
  try{const j=await api('/ai',{kind,perfil:perfilParaIA(),token:lic&&lic.token},ms);if(!j.text)throw new Error('A IA não devolveu texto.');return j.text}
  catch(e){if(e.status===402){closeModal();mPaywall('ia');throw Object.assign(new Error(e.message),{shown:true})}throw e}}
@@ -769,7 +856,11 @@ goto:t=>{cur=t.dataset.d;tab=t.dataset.v||'food';render();window.scrollTo(0,0)},
 addFood:t=>mFood(t.dataset.meal),addDrink:mDrink,qwork:t=>mWork(t.dataset.t),close:closeModal,quest:mQuest,ai:t=>aiAsk(t.dataset.k),
 aiLast:t=>{const a=P().ai&&P().ai[t.dataset.k];if(a)aiShow(t.dataset.k,a.txt,a.date)},
 goProfile:()=>{closeModal();tab='profile';render();window.scrollTo(0,0)},
-paywall:()=>mPaywall(),activate:()=>mActivate(lic&&lic.email),
+paywall:()=>mPaywall(),
+chStart:()=>{db.profile.chStart=today();db.profile.chDone={};save();render();toast('Desafio começou! Dia 1')},
+chMission:()=>{const k=today(),m=db.profile.chDone=db.profile.chDone||{};if(m[k])delete m[k];else m[k]=1;save();render();if(m[k]&&chOk(k))toast('Dia completo! 🏆')},
+chReset:()=>{if(!confirm('Reiniciar o desafio do dia 1? Seus registros continuam salvos.'))return;db.profile.chStart=today();db.profile.chDone={};save();render()},
+chShare:()=>chShare().catch(()=>toast('Não foi possível gerar a imagem')),activate:()=>mActivate(lic&&lic.email),
 licCheck:async()=>{await licRefresh(true);render();toast(isPro()?'Premium ativo':'Status atualizado')},
 licOut:()=>{if(!confirm('Sair do Premium neste aparelho? Você pode ativar de novo depois com o mesmo e-mail.'))return;api('/release',{token:lic.token}).catch(()=>{});saveLic(null);render()},
 testAI:async()=>{const el=$('#aitest');el.textContent='Testando...';const t0=Date.now();
@@ -783,7 +874,7 @@ privAdd:()=>{const v=$('#ptime').value;if(!v)return toast('Informe o horário');
 privDel:t=>{if(!confirm('Remover este registro?'))return;const x=D(privSel).intim;x.times=x.times||[];if(+t.dataset.i>=0)x.times.splice(+t.dataset.i,1);else x.times=[];x.had=x.times.length?1:0;x.count=x.times.length;save();render()},
 delw:t=>{if(!confirm('Remover este peso?'))return;D(t.dataset.d).weight=null;save();render()},
 delMeasure:t=>{if(!confirm('Remover estas medidas?'))return;db.measures=db.measures.filter(m=>m.date!==t.dataset.d);save();render()},
-addPhoto:()=>{if(needPro('fotos'))$('#ph').click()},
+addPhoto:()=>{const cd=chDay();if((cd>=1&&cd<=CH_FREE)||needPro('fotos'))$('#ph').click()},
 viewPhoto:async t=>{try{const p=await phTx('readonly',s=>s.get(+t.dataset.id));if(!p)return;openModal(`<h3>${parseKey(p.date).toLocaleDateString('pt-BR')}</h3><img src="${p.data}" alt="" style="width:100%;border-radius:14px;margin:8px 0"><div class=two><button class="btn sec" data-a=close>Fechar</button><button class="btn red" data-a=delPhoto data-id=${p.id}>Apagar</button></div>`)}catch(e){toast('Não foi possível abrir a foto')}},
 delPhoto:async t=>{if(!confirm('Apagar esta foto?'))return;try{await phTx('readwrite',s=>s.delete(+t.dataset.id))}catch(e){}closeModal();loadPhotos()},
 qdrink:t=>{const dd=DRINKS.find(x=>x[0]===t.dataset.t),ml=+t.dataset.ml;D(cur).drinks.push({type:dd[0],label:dd[1],ml,kcal:Math.round(dd[2]*ml/100)});save();render();toast('Adicionado!')},
