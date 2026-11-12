@@ -1,24 +1,18 @@
-/**
- * Meu Controle de Vida — servidor (Cloudflare Worker)
- *
- * Faz três coisas:
- *  1. IA (Gemini): monta dieta e treino. A chave da IA fica só aqui, nunca no app.
- *  2. Licenças Premium: ativação pelo e-mail da compra, até 3 aparelhos por compra.
- *  3. Webhooks de venda (Kiwify e Hotmart): liberam, renovam ou cancelam o Premium sozinhos.
- *
- * Segredos (configure com `npx wrangler secret put NOME`):
- *  GEMINI_API_KEY   chave da API do Gemini (Google AI Studio)
- *  TOKEN_SECRET     texto aleatório longo, usado para assinar as licenças
- *  ADMIN_KEY        senha do painel admin (admin.html)
- *  KIWIFY_TOKEN     token do webhook da Kiwify (se vender pela Kiwify)
- *  HOTMART_HOTTOK   hottok do webhook da Hotmart (se vender pela Hotmart)
- *
- * Variáveis (wrangler.toml → [vars]):
- *  ALLOWED_ORIGINS  endereços do app separados por vírgula, ex: https://seuusuario.github.io
- *  GEMINI_MODEL     modelo do Gemini (padrão: gemini-flash-latest)
- *
- * Banco: um namespace KV ligado como `LIC`.
- */
+// Meu Controle de Vida — servidor (Cloudflare Worker)
+// Faz três coisas:
+// 1. IA (Gemini): monta dieta e treino. A chave da IA fica só aqui, nunca no app.
+// 2. Licenças Premium: ativação pelo e-mail da compra, até 3 aparelhos por compra.
+// 3. Webhooks de venda (Kiwify e Hotmart): liberam, renovam ou cancelam o Premium sozinhos.
+// Segredos (Cloudflare: Settings → Variables and Secrets, tipo Secret):
+// GEMINI_API_KEY   chave da API do Gemini (Google AI Studio)
+// TOKEN_SECRET     texto aleatório longo, usado para assinar as licenças
+// ADMIN_KEY        senha do painel admin (admin.html)
+// KIWIFY_TOKEN     token do webhook da Kiwify (se vender pela Kiwify)
+// HOTMART_HOTTOK   hottok do webhook da Hotmart (se vender pela Hotmart)
+// Variáveis (Cloudflare: Settings → Variables and Secrets, tipo Text):
+// ALLOWED_ORIGINS  endereços do app separados por vírgula, ex: https://seuusuario.github.io
+// GEMINI_MODEL     modelo do Gemini (padrão: gemini-flash-latest)
+// Banco: um namespace KV ligado como LIC (Settings → Bindings).
 
 const MAX_DEVICES = 3;
 const PRO_AI_PER_DAY = 30;    // gerações de IA por dia para quem é Premium
@@ -76,7 +70,7 @@ export default {
   },
 };
 
-/* ======================= LICENÇAS ======================= */
+// ======================= LICENÇAS =======================
 
 const normEmail = e => String(e || '').trim().toLowerCase();
 const validEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e) && e.length <= 200;
@@ -116,7 +110,7 @@ async function release(body, device, env, json, fail) {
   return json({ ok: true });
 }
 
-/* Libera, renova ou bloqueia um e-mail (usado pelos webhooks e pelo admin). */
+// Libera, renova ou bloqueia um e-mail (usado pelos webhooks e pelo admin).
 async function grant(env, email, plan, { days, revoke, note } = {}) {
   const rec = (await getUser(env, email)) || { devices: [], created: Date.now() };
   if (revoke) {
@@ -135,7 +129,7 @@ async function grant(env, email, plan, { days, revoke, note } = {}) {
   return rec;
 }
 
-/* Token = base64url(dados).base64url(HMAC-SHA256) */
+// Token = base64url(dados).base64url(HMAC-SHA256)
 const b64u = buf => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 const fromB64u = s => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
 async function hmacKey(secret, hash = 'SHA-256') {
@@ -156,7 +150,7 @@ async function unsign(env, token) {
   } catch { return null; }
 }
 
-/* ======================= IA ======================= */
+// ======================= IA =======================
 
 const TASKS = {
   dieta: 'Monte uma dieta de um dia completo (café da manhã, almoço, lanche, jantar e ceia) com a quantidade em gramas de cada alimento, usando comidas comuns no Brasil (arroz, feijão, cuscuz, macaxeira, ovo, frango, banana etc.), com estimativa de calorias por refeição e total do dia (perto da meta_kcal) e 3 dicas.',
@@ -212,11 +206,11 @@ async function ai(body, device, req, env, json, fail) {
   return json({ ok: true, text });
 }
 
-/* ======================= WEBHOOKS DE VENDA ======================= */
-/* Cadastre um webhook por produto/plano, com o plano na URL:
- *   https://SEU-WORKER.workers.dev/webhook/kiwify?plano=anual
- *   https://SEU-WORKER.workers.dev/webhook/hotmart?plano=mensal
- * Planos aceitos: mensal, trimestral, anual, vitalicio. */
+// ======================= WEBHOOKS DE VENDA =======================
+// Cadastre um webhook por produto/plano, com o plano na URL:
+// https://SEU-WORKER.workers.dev/webhook/kiwify?plano=anual
+// https://SEU-WORKER.workers.dev/webhook/hotmart?plano=mensal
+// Planos aceitos: mensal, trimestral, anual, vitalicio.
 
 const planFrom = url => (PLAN_DAYS[url.searchParams.get('plano')] !== undefined ? url.searchParams.get('plano') : 'mensal');
 
@@ -262,7 +256,7 @@ async function hotmart(req, env, url, json, fail) {
   return json({ ok: true });
 }
 
-/* ======================= ADMIN ======================= */
+// ======================= ADMIN =======================
 
 async function admin(path, req, env, json, fail) {
   const b = req.method === 'POST' ? await req.json().catch(() => ({})) : {};
