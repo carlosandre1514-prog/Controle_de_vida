@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Política de Privacidade · Meu Controle de Vida</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+:root{--bg:#0a0f0d;--card:#121a17;--line:#24332c;--txt:#eef5f0;--mut:#9db0a6;--acc:#8ef04a}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,Roboto,sans-serif;line-height:1.65}
+main{max-width:760px;margin:0 auto;padding:28px 20px 60px}
+h1{font-size:28px;margin:6px 0 4px}h2{font-size:19px;margin:28px 0 6px;color:var(--acc)}
+p,li{color:#d5e2da}a{color:var(--acc)}.mut{color:var(--mut);font-size:14px}
+</style>
+</head>
+<body>
+<main>
+<a href="vendas.html" class="mut">‹ Meu Controle de Vida</a>
+<h1>Política de Privacidade</h1>
+<p class="mut">Esta política explica, conforme a Lei Geral de Proteção de Dados (LGPD, Lei 13.709/2018), quais dados o Meu Controle de Vida usa e por quê.</p>
+<h2>1. Controlador</h2>
+<p><b data-s="nome">[SEU NOME]</b>, <span data-s="doc">[CPF/CNPJ]</span>. Contato do encarregado: <span data-s="email">[E-MAIL]</span>.</p>
+<h2>2. Dados que ficam só no seu aparelho</h2>
+<p>Tudo o que você registra (refeições, bebidas, treinos, sono, higiene, peso, medidas, fotos, percursos de GPS, área privada e respostas do questionário) é salvo <b>apenas no armazenamento do seu navegador</b>. Esses dados não são enviados para nós, exceto no caso do item 3.</p>
+<h2>3. Dados enviados ao usar a IA</h2>
+<p>Quando você pede uma dieta ou treino à IA, enviamos ao nosso servidor somente o resumo do seu perfil: sexo, idade, altura, peso, biotipo, objetivo, nível, local e dias de treino, meta de calorias, restrições alimentares e observações de saúde que você escreveu. O servidor repassa esse resumo ao serviço de IA (Google Gemini) apenas para gerar a resposta e <b>não o armazena</b>. Esses dados podem incluir informação de saúde (dado sensível); por isso, o envio só acontece quando você toca no botão da IA, o que vale como seu consentimento específico para essa finalidade.</p>
+<h2>4. Dados de compra e licença</h2>
+<p>Para liberar o Premium guardamos: e-mail da compra, plano, validade, status (ativo, cancelado, reembolsado) e um identificador aleatório de cada aparelho ativado. A plataforma de pagamento nos envia esses dados quando a compra é aprovada. Dados de cartão nunca chegam até nós. Base legal: execução de contrato.</p>
+<h2>5. Dados técnicos</h2>
+<p>Para evitar abuso da IA, o servidor conta quantas gerações cada aparelho e cada endereço IP fez no dia. Esses contadores expiram sozinhos em até 2 dias (no teste grátis, o contador do aparelho dura até 13 meses). Base legal: legítimo interesse.</p>
+<h2>6. Com quem compartilhamos</h2>
+<ul><li>Cloudflare (hospedagem do servidor);</li><li>Google (serviço de IA Gemini, somente o resumo do item 3);</li><li>Plataforma de pagamento (Kiwify, Hotmart ou outra usada na sua compra);</li><li>OpenStreetMap (imagens do mapa, carregadas diretamente pelo seu aparelho).</li></ul>
+<p>Alguns desses serviços podem processar dados fora do Brasil, com as garantias previstas na LGPD.</p>
+<h2>7. Seus direitos</h2>
+<p>Você pode pedir confirmação, acesso, correção ou exclusão dos dados de compra e licença pelo contato acima. Os dados do aparelho você mesmo apaga em Perfil → Apagar tudo.</p>
+<h2>8. Segurança</h2>
+<p>A comunicação com o servidor é criptografada (HTTPS) e as licenças são assinadas digitalmente. A área privada pode ser protegida por PIN, que é uma trava leve contra curiosos e não protege contra quem tem acesso técnico ao aparelho.</p>
+<h2>9. Menores de idade</h2>
+<p>O App não é destinado a menores de 18 anos sem o acompanhamento dos responsáveis.</p>
+
+<p class="mut" style="margin-top:36px">Última atualização: 12/11/2026.</p>
+</main>
+<script src="config.js"></script>
+<script>(function(){var s=(window.MCV||{}).SELLER||{},c=window.MCV||{};document.querySelectorAll('[data-s]').forEach(function(e){var v={nome:s.nome,doc:s.doc,cidade:s.cidade,email:c.SUPPORT_EMAIL||'pelo WhatsApp de suporte'}[e.dataset.s];if(v)e.textContent=v})})();</script>
+</body>
+</html>

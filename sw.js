@@ -1,7 +1,7 @@
 /* Service worker do Meu Controle de Vida: deixa o app abrir offline.
    Troque o número da versão (V) sempre que quiser forçar a atualização do cache. */
-const V = 'mcv-v2';
-const CORE = ['./', 'index.html', 'manifest.webmanifest', 'icon.svg', 'icon-192.png', 'icon-512.png'];
+const V = 'mcv-v6';
+const CORE = ['./', 'index.html', 'config.js', 'manifest.webmanifest', 'icon.svg', 'icon-192.png', 'icon-512.png', 'icon-maskable.png', 'apple-touch-icon.png', 'termos.html', 'privacidade.html'];
 const CDN = [
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
@@ -37,13 +37,13 @@ self.addEventListener('fetch', e => {
           caches.open(V).then(c => c.put(r, cp));
           return res;
         })
-        .catch(() => caches.match(r).then(m => m || caches.match('index.html')))
+        .catch(() => caches.match(r, { ignoreSearch: true }).then(m => m || caches.match('index.html')))
     );
     return;
   }
 
-  // biblioteca do mapa: cache primeiro
-  if (u.hostname === 'unpkg.com') {
+  // biblioteca do mapa e fonte: cache primeiro
+  if (['unpkg.com', 'fonts.googleapis.com', 'fonts.gstatic.com'].includes(u.hostname)) {
     e.respondWith(
       caches.match(r).then(m => m || fetch(r).then(res => {
         const cp = res.clone();

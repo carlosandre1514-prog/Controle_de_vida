@@ -1,0 +1,16 @@
+# Configuração do servidor do Meu Controle de Vida (Cloudflare Workers)
+# Publicar: cd worker && npx wrangler deploy
+name = "proud-sea-aab5"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+
+[vars]
+# Endereço(s) onde o app está publicado, separados por vírgula (sem barra no fim).
+ALLOWED_ORIGINS = "https://carlosandre1514-prog.github.io"
+GEMINI_MODEL = "gemini-flash-latest"
+
+# Crie o banco com:  npx wrangler kv namespace create LIC
+# e cole o id que aparecer abaixo.
+[[kv_namespaces]]
+binding = "LIC"
+id = "COLE_AQUI_O_ID_DO_KV"

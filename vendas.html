@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Desafio 30 Dias · Meu Controle de Vida</title>
+<meta name="description" content="O app que diz exatamente o que fazer hoje para mudar seu corpo e sua rotina em 30 dias. Água, alimentação, treino e sono, com missões diárias e IA. Comece grátis.">
+<meta name="theme-color" content="#070b09">
+<meta property="og:title" content="Desafio 30 Dias · Meu Controle de Vida">
+<meta property="og:description" content="Uma missão por dia. Em 30 dias, outra rotina. Comece grátis.">
+<meta property="og:image" content="img/og.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+:root{--bg:#070b09;--bg2:#0b110e;--card:#111915;--card2:#16201b;--line:#203029;--line2:#2b3d34;--txt:#eef5f0;--mut:#9aada3;--acc:#8ef04a;--acc-d:#5fd635;--ink:#0b1a07;--red:#ff6b6b;--orange:#ffb347;--blue:#4cc9f0;--purple:#a78bfa;--yellow:#f0d84a}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;overflow-x:clip}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:'Plus Jakarta Sans',system-ui,-apple-system,Roboto,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+.w{max-width:1120px;margin:0 auto;padding:0 20px}
+.ic{width:22px;height:22px;flex:none}
+
+/* topo */
+header.nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 80%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid #ffffff0d}
+.nav .w{display:flex;align-items:center;gap:14px;height:68px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:16px;letter-spacing:-.01em;white-space:nowrap}
+.btn{white-space:nowrap}
+.logo img{width:32px;height:32px;border-radius:9px}
+.nav .links{display:flex;gap:26px;margin-left:auto;font-size:14px;color:var(--mut);font-weight:500}
+.nav .links a:hover{color:var(--txt)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--acc);color:var(--ink);font-weight:700;border-radius:14px;padding:15px 24px;font-size:16px;border:0;cursor:pointer;transition:transform .15s,box-shadow .15s,background .15s;box-shadow:0 8px 30px -8px #8ef04a80}
+.btn:hover{transform:translateY(-1px);box-shadow:0 12px 36px -8px #8ef04aa0}
+.btn.sec{background:#ffffff0d;color:var(--txt);box-shadow:none;border:1px solid var(--line2)}
+.btn.sec:hover{background:#ffffff14}
+.btn.sm{padding:10px 16px;font-size:14px;border-radius:12px;box-shadow:none}
+.btn.block{display:flex;width:100%;padding:18px;font-size:17px}
+
+.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--acc);font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:12px}
+h1{font-size:clamp(38px,6vw,66px);line-height:1.02;margin:16px 0 18px;letter-spacing:-.035em;font-weight:800}
+h1 em{font-style:normal;background:linear-gradient(90deg,#c6ff8f,var(--acc) 40%,var(--acc-d));-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:clamp(28px,4vw,44px);line-height:1.1;margin:12px 0 14px;letter-spacing:-.03em;font-weight:800}
+h3{letter-spacing:-.01em}
+.lead{font-size:18px;color:var(--mut);max-width:560px;margin:0}
+.center{text-align:center}.center .lead{margin:0 auto}
+.small{font-size:13px;color:var(--mut)}
+
+/* hero */
+.hero{position:relative;padding:64px 0 40px;overflow:clip}
+.hero::before{content:"";position:absolute;inset:-200px 0 auto;height:800px;background:radial-gradient(50% 50% at 70% 40%,#8ef04a26,transparent 70%),radial-gradient(40% 40% at 10% 10%,#4cc9f014,transparent 70%);pointer-events:none;z-index:-1}
+.hero .w{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:6px 12px 6px 6px;border-radius:999px;background:#ffffff0a;border:1px solid var(--line2);font-size:13px;color:var(--mut);font-weight:500}
+.pill b{background:var(--acc);color:var(--ink);border-radius:999px;padding:2px 9px;font-size:12px}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin:30px 0 18px}
+.checks{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:14px;color:var(--mut)}
+.checks span{display:inline-flex;align-items:center;gap:6px}
+.checks .ic{width:16px;height:16px;color:var(--acc)}
+
+/* celulares */
+.phone{position:relative;width:290px;aspect-ratio:390/844;border-radius:46px;padding:9px;background:linear-gradient(160deg,#2a3530,#0d1210);box-shadow:0 0 0 1px #ffffff14 inset,0 40px 80px -20px #000,0 0 0 1px #00000080}
+.phone img{width:100%;height:100%;object-fit:cover;object-position:top;border-radius:38px}
+.phone::after{content:"";position:absolute;top:18px;left:50%;transform:translateX(-50%);width:84px;height:24px;border-radius:20px;background:#000}
+.stage{position:relative;height:620px;display:flex;justify-content:center;align-items:center}
+.stage .p1{z-index:2}
+.stage .p2{position:absolute;transform:translate(150px,30px) rotate(7deg) scale(.86);opacity:.9;z-index:1}
+.float{position:absolute;z-index:3;display:flex;align-items:center;gap:10px;background:#121b16ee;border:1px solid var(--line2);backdrop-filter:blur(8px);border-radius:16px;padding:10px 14px;font-size:13px;font-weight:600;box-shadow:0 20px 40px -12px #000c}
+.float .b{width:32px;height:32px;border-radius:10px;display:grid;place-items:center}
+.float small{display:block;color:var(--mut);font-weight:500;font-size:11px}
+.f1{left:0;top:110px}.f1 .b{background:#8ef04a22;color:var(--acc)}
+.f2{left:20px;bottom:120px}.f2 .b{background:#4cc9f022;color:var(--blue)}
+.f3{right:0;top:40px}.f3 .b{background:#ffb34722;color:var(--orange)}
+
+/* faixa */
+.strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg2)}
+.strip .w{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:26px 20px}
+.strip div{text-align:center}
+.strip b{display:block;font-size:28px;letter-spacing:-.02em}
+.strip span{font-size:13px;color:var(--mut)}
+
+section{padding:96px 0}
+.sec-head{max-width:680px;margin-bottom:46px}
+.sec-head.center{margin-left:auto;margin-right:auto}
+
+/* passos */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.step{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:26px}
+.step .n{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:#8ef04a1a;color:var(--acc);font-weight:800;margin-bottom:16px}
+.step h3{margin:0 0 6px;font-size:18px}
+.step p{margin:0;color:var(--mut);font-size:15px}
+
+/* recursos */
+.feats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.feat{background:linear-gradient(160deg,color-mix(in srgb,var(--c) 7%,var(--card)),var(--card) 55%);border:1px solid var(--line);border-radius:24px;padding:26px;transition:border-color .2s,transform .2s}
+.feat:hover{border-color:color-mix(in srgb,var(--c) 40%,var(--line));transform:translateY(-2px)}
+.feat .b{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 16%,transparent);color:var(--c);margin-bottom:18px}
+.feat h3{margin:0 0 6px;font-size:18px}
+.feat p{margin:0;color:var(--mut);font-size:15px}
+
+/* galeria */
+.gallery{display:flex;gap:26px;overflow-x:auto;scroll-snap-type:x mandatory;padding:10px 20px 30px;margin:0 -20px;scrollbar-width:none}
+.gallery::-webkit-scrollbar{display:none}
+.gallery figure{margin:0;flex:none;scroll-snap-align:center;text-align:center}
+.gallery .phone{width:250px}
+.gallery figcaption{margin-top:16px;font-weight:700}
+.gallery figcaption span{display:block;font-weight:500;font-size:14px;color:var(--mut)}
+
+/* stories */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.list{list-style:none;padding:0;margin:24px 0 0}
+.list li{display:flex;gap:12px;padding:10px 0;color:var(--mut)}
+.list li b{color:var(--txt)}
+.list .ic{color:var(--acc);margin-top:3px}
+
+/* comparação */
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.vs .card{border-radius:24px;padding:28px;border:1px solid var(--line);background:var(--card)}
+.vs .good{border-color:#8ef04a55;background:linear-gradient(160deg,#8ef04a12,var(--card) 60%)}
+.vs h3{margin:0 0 14px;font-size:18px;display:flex;align-items:center;gap:10px}
+.vs ul{list-style:none;padding:0;margin:0}
+.vs li{display:flex;gap:10px;padding:9px 0;border-top:1px solid var(--line);color:var(--mut);font-size:15px}
+.vs .bad .ic{color:var(--red)}.vs .good .ic{color:var(--acc)}
+
+/* oferta */
+.offer{max-width:500px;margin:0 auto;position:relative;border-radius:30px;padding:2px;background:linear-gradient(160deg,var(--acc),#2d6a1c 40%,var(--line2))}
+.offer .in{background:linear-gradient(180deg,#111a15,#0b110e);border-radius:28px;padding:34px 30px 28px;text-align:center}
+.offer .tag{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--acc);color:var(--ink);font-weight:800;font-size:12px;padding:5px 14px;border-radius:999px;letter-spacing:.06em;white-space:nowrap}
+.offer h3{margin:0;font-size:18px;color:var(--mut);font-weight:600}
+.offer .de{color:var(--mut);text-decoration:line-through;font-size:17px;margin-top:14px}
+.offer .v{font-size:58px;font-weight:800;letter-spacing:-.04em;line-height:1.05}
+.offer ul{text-align:left;list-style:none;padding:0;margin:26px 0}
+.offer li{display:flex;gap:10px;padding:9px 0;border-top:1px solid var(--line);font-size:15px}
+.offer li .ic{color:var(--acc);width:20px;height:20px}
+.more{max-width:500px;margin:14px auto 0;display:grid;gap:10px}
+.trust{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 22px;margin-top:18px;font-size:13px;color:var(--mut)}
+.trust span{display:inline-flex;align-items:center;gap:6px}.trust .ic{width:16px;height:16px}
+.guarantee{display:flex;gap:16px;align-items:center;max-width:500px;margin:22px auto 0;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px 20px;text-align:left}
+.guarantee .b{width:48px;height:48px;flex:none;border-radius:14px;display:grid;place-items:center;background:#8ef04a1a;color:var(--acc)}
+
+/* dúvidas */
+.faq{max-width:760px;margin:0 auto}
+details{border-bottom:1px solid var(--line);padding:20px 4px}
+summary{cursor:pointer;font-weight:700;font-size:17px;list-style:none;display:flex;justify-content:space-between;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:22px;line-height:1;color:var(--acc);transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{color:var(--mut);margin:12px 0 0}
+
+.final{position:relative;border-radius:32px;padding:70px 30px;text-align:center;overflow:hidden;background:radial-gradient(60% 80% at 50% 0%,#8ef04a2e,transparent 70%),var(--card);border:1px solid var(--line)}
+
+footer{padding:40px 0 100px;border-top:1px solid var(--line);color:var(--mut);font-size:14px}
+footer .w{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center}
+footer nav{display:flex;gap:18px}
+footer a:hover{color:var(--txt)}
+.disc{flex-basis:100%;font-size:12px;color:#6f8379}
+
+.sticky{position:fixed;left:0;right:0;bottom:0;z-index:60;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:#070b09e6;backdrop-filter:blur(10px);border-top:1px solid var(--line);display:none;transform:translateY(110%);transition:transform .3s}
+.sticky.on{transform:none}
+
+/* animação de entrada */
+.rv{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.rv.on{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}.btn,.feat{transition:none}}
+
+@media (max-width:900px){
+ .nav .links{display:none}.nav .btn{margin-left:auto}
+ .hero{padding-top:36px}
+ .hero .w,.split{grid-template-columns:1fr;gap:28px}
+ .stage{height:540px;margin-top:10px}
+ .phone{width:250px}
+ .stage .p2{transform:translate(100px,24px) rotate(7deg) scale(.82)}
+ .logo{font-size:14px}.logo img{width:28px;height:28px}.nav .btn.sm{padding:9px 13px;font-size:13px}
+ .f1{left:0;top:auto;bottom:210px}.f2{left:auto;right:0;bottom:60px}.f3{right:0;top:0}
+ .strip .w{grid-template-columns:repeat(2,1fr);gap:20px}
+ .steps,.feats,.vs{grid-template-columns:1fr}
+ section{padding:72px 0}
+ .split .phone{margin:0 auto}
+ .sticky{display:block}
+}
+@media (max-width:380px){.float{font-size:12px;padding:8px 10px}.stage .p2{display:none}}
+</style>
+</head>
+<body>
+
+<header class="nav"><div class="w">
+ <a class="logo" href="#"><img src="icon.svg" alt="">Meu Controle de Vida</a>
+ <nav class="links"><a href="#como">Como funciona</a><a href="#recursos">Recursos</a><a href="#preco">Preço</a><a href="#duvidas">Dúvidas</a></nav>
+ <a class="btn sm" href="index.html">Começar grátis</a>
+</div></header>
+
+<main>
+<section class="hero"><div class="w">
+ <div class="rv">
+  <span class="pill"><b>Novo</b> Desafio 30 Dias com missões diárias</span>
+  <h1>Em 30 dias, <em>uma nova rotina.</em></h1>
+  <p class="lead">Você não precisa de mais motivação. Precisa saber <strong style="color:var(--txt)">o que fazer hoje</strong>. O app te dá 5 tarefas por dia (água, alimentação, treino, sono e uma missão especial) e acompanha tudo por você.</p>
+  <div class="cta"><a class="btn" href="index.html">Começar grátis <i data-i="arrow"></i></a><a class="btn sec" href="#preco">Ver preço</a></div>
+  <div class="checks"><span><i data-i="check"></i>3 dias grátis</span><span><i data-i="check"></i>Sem cartão</span><span><i data-i="check"></i>Android e iPhone</span><span><i data-i="check"></i>Funciona offline</span></div>
+ </div>
+ <div class="stage rv">
+  <div class="phone p2"><img src="img/tela-inicio.jpg" alt="Tela inicial do app" loading="eager"></div>
+  <div class="phone p1"><img src="img/tela-desafio.jpg" alt="Tela do Desafio 30 Dias" loading="eager"></div>
+  <div class="float f1"><span class="b"><i data-i="check"></i></span><div>Dia 8 completo<small>sequência de 7 dias</small></div></div>
+  <div class="float f2"><span class="b"><i data-i="drop"></i></span><div>2.400 ml<small>meta de água batida</small></div></div>
+  <div class="float f3"><span class="b"><i data-i="spark"></i></span><div>Dieta pronta<small>montada pela IA</small></div></div>
+ </div>
+</div></section>
+
+<div class="strip"><div class="w">
+ <div><b>30</b><span>missões diferentes</span></div>
+ <div><b>5</b><span>tarefas simples por dia</span></div>
+ <div><b>100%</b><span>funciona sem internet</span></div>
+ <div><b>0</b><span>dados seus em servidores</span></div>
+</div></div>
+
+<section id="como"><div class="w">
+ <div class="sec-head rv"><span class="eyebrow">Como funciona</span><h2>Um quadradinho verde por dia</h2><p class="lead">Cumpriu 4 das 5 tarefas, o dia fica verde. Ver a sequência crescendo é o que faz você não desistir na segunda semana.</p></div>
+ <div class="steps">
+  <div class="step rv"><div class="n">1</div><h3>Instale em 10 segundos</h3><p>Abra no navegador e toque em "Adicionar à tela inicial". Sem loja, sem cadastro.</p></div>
+  <div class="step rv"><div class="n">2</div><h3>Siga as tarefas do dia</h3><p>Água, refeições, treino, sono e a missão especial. Poucos toques por dia.</p></div>
+  <div class="step rv"><div class="n">3</div><h3>Veja sua evolução</h3><p>Sequências, gráficos de peso e fotos do dia 1 ao dia 30.</p></div>
+ </div>
+</div></section>
+
+<section id="recursos" style="padding-top:0"><div class="w">
+ <div class="sec-head rv"><span class="eyebrow">Recursos</span><h2>Tudo o que importa, em um só app</h2></div>
+ <div class="feats">
+  <div class="feat rv" style="--c:var(--acc)"><div class="b"><i data-i="trophy"></i></div><h3>Desafio 30 Dias</h3><p>Cinco tarefas por dia e uma missão diferente a cada dia, como "um dia sem refri" ou "100 agachamentos".</p></div>
+  <div class="feat rv" style="--c:var(--blue)"><div class="b"><i data-i="drop"></i></div><h3>Água na medida certa</h3><p>Meta calculada para o seu peso. Um toque registra cada copo.</p></div>
+  <div class="feat rv" style="--c:var(--orange)"><div class="b"><i data-i="apple"></i></div><h3>Alimentação</h3><p>Calorias e macros das comidas do dia a dia: arroz, feijão, cuscuz, ovo, frango.</p></div>
+  <div class="feat rv" style="--c:#c6ff8f"><div class="b"><i data-i="spark"></i></div><h3>Dieta e treino por IA</h3><p>Responda 1 minuto de perguntas e receba um cardápio com gramas e o treino da semana.</p></div>
+  <div class="feat rv" style="--c:#ff7a45"><div class="b"><i data-i="dumbbell"></i></div><h3>Treino guiado</h3><p>Planos para academia ou casa, com séries, cargas e cronômetro de descanso.</p></div>
+  <div class="feat rv" style="--c:var(--yellow)"><div class="b"><i data-i="trend"></i></div><h3>Peso, medidas e fotos</h3><p>Gráfico de evolução, medidas do corpo e o seu antes e depois.</p></div>
+ </div>
+</div></section>
+
+<section style="padding-top:0"><div class="w">
+ <div class="sec-head center rv"><span class="eyebrow">Por dentro do app</span><h2>Simples de usar. Bonito de ver.</h2></div>
+ <div class="gallery rv">
+  <figure><div class="phone"><img src="img/tela-inicio.jpg" alt="Tela inicial" loading="lazy"></div><figcaption>Seu dia em foco<span>Resumo e sequências</span></figcaption></figure>
+  <figure><div class="phone"><img src="img/tela-alimentacao.jpg" alt="Alimentação" loading="lazy"></div><figcaption>Alimentação<span>Calorias e macros</span></figcaption></figure>
+  <figure><div class="phone"><img src="img/tela-ia.jpg" alt="Dieta gerada pela IA" loading="lazy"></div><figcaption>Dieta por IA<span>Cardápio com gramas</span></figcaption></figure>
+  <figure><div class="phone"><img src="img/tela-peso.jpg" alt="Peso e medidas" loading="lazy"></div><figcaption>Evolução<span>Peso, medidas e fotos</span></figcaption></figure>
+ </div>
+</div></section>
+
+<section style="padding-top:0"><div class="w split">
+ <div class="phone rv" style="width:270px;justify-self:center"><img src="img/story.jpg" alt="Imagem de progresso para os stories" loading="lazy"></div>
+ <div class="rv">
+  <span class="eyebrow">Compartilhe</span>
+  <h2>Seu progresso vira post</h2>
+  <p class="lead">Com um toque o app cria uma imagem do seu dia no formato dos stories. Poste, marque um amigo e faça o desafio junto.</p>
+  <ul class="list">
+   <li><i data-i="check"></i><span><b>Compromisso público</b>: quem posta, continua.</span></li>
+   <li><i data-i="check"></i><span><b>Parceiro de desafio</b>: em dupla é mais fácil chegar ao dia 30.</span></li>
+   <li><i data-i="check"></i><span><b>Certificado no fim</b>: comemore os 30 dias.</span></li>
+  </ul>
+ </div>
+</div></section>
+
+<section style="padding-top:0"><div class="w">
+ <div class="sec-head center rv"><span class="eyebrow">Por que funciona</span><h2>Sem método, você já sabe como termina</h2></div>
+ <div class="vs">
+  <div class="card bad rv"><h3>Sozinho</h3><ul><li><i data-i="x"></i>Começa na segunda, para na quinta</li><li><i data-i="x"></i>Não sabe se bebeu água suficiente</li><li><i data-i="x"></i>Não sabe quanto comeu</li><li><i data-i="x"></i>Não vê progresso e desanima</li></ul></div>
+  <div class="card good rv"><h3>Com o Desafio 30 Dias</h3><ul><li><i data-i="check"></i>Sabe exatamente o que fazer hoje</li><li><i data-i="check"></i>Metas calculadas para o seu corpo</li><li><i data-i="check"></i>Sequência verde que dá vontade de continuar</li><li><i data-i="check"></i>Fotos e medidas do dia 1 ao dia 30</li></ul></div>
+ </div>
+</div></section>
+
+<section id="preco" style="padding-top:0"><div class="w">
+ <div class="sec-head center rv"><span class="eyebrow">Preço</span><h2>Comece grátis. Continue por menos que um lanche.</h2></div>
+ <div class="offer rv" id="offer0"><span class="tag">PREÇO DE LANÇAMENTO</span><div class="in">
+  <h3 data-o="titulo">Acesso vitalício</h3>
+  <div class="de" data-o="de">R$ 59,90</div>
+  <div class="v" data-o="preco">R$ 27,90</div>
+  <div class="small" data-o="nota">pagamento único · preço de lançamento</div>
+  <ul>
+   <li><i data-i="check"></i>Desafio 30 Dias completo, quantas vezes quiser</li>
+   <li><i data-i="check"></i>Dieta e treino montados por IA</li>
+   <li><i data-i="check"></i>Treino guiado com cargas e descanso</li>
+   <li><i data-i="check"></i>Fotos de evolução e estatísticas completas</li>
+   <li><i data-i="check"></i>Até 3 aparelhos</li>
+   <li><i data-i="check"></i>Todas as atualizações futuras</li>
+  </ul>
+  <a class="btn block" data-buy="0" href="index.html?premium=1">Quero o acesso</a>
+  <div class="trust"><span><i data-i="lock"></i>Pagamento seguro</span><span><i data-i="bolt"></i>Pix, cartão ou boleto</span></div>
+ </div></div>
+ <div class="more" id="more"></div>
+ <div class="guarantee rv"><span class="b"><i data-i="shield"></i></span><div><b>Garantia incondicional de 7 dias</b><div class="small">Não gostou? Peça o reembolso em até 7 dias e devolvemos 100% do valor.</div></div></div>
+</div></section>
+
+<section id="duvidas" style="padding-top:0"><div class="w">
+ <div class="sec-head center rv"><span class="eyebrow">Dúvidas</span><h2>Perguntas frequentes</h2></div>
+ <div class="faq rv">
+  <details><summary>Preciso baixar em alguma loja?</summary><p>Não. Abra o link no navegador do celular e toque em "Adicionar à tela inicial" (no iPhone, pelo botão Compartilhar do Safari). Ele ganha ícone e abre em tela cheia, como qualquer app.</p></details>
+  <details><summary>É pagamento único mesmo?</summary><p>Sim. No acesso vitalício você paga uma vez e usa para sempre, sem mensalidade.</p></details>
+  <details><summary>Como recebo o acesso depois de pagar?</summary><p>No app, toque em Perfil → Premium → "Já comprei: ativar" e digite o e-mail usado na compra. Pix e cartão liberam em minutos.</p></details>
+  <details><summary>Funciona sem internet?</summary><p>Sim. Os registros e o desafio funcionam offline. Só a IA e o mapa precisam de internet.</p></details>
+  <details><summary>Sou iniciante. Serve para mim?</summary><p>Sim. As metas são calculadas para o seu corpo e os treinos têm versão para fazer em casa. Se você tem alguma condição de saúde, converse com seu médico antes de começar.</p></details>
+  <details><summary>Onde ficam meus dados?</summary><p>No seu próprio celular. Nós não vemos o que você registra.</p></details>
+ </div>
+</div></section>
+
+<section style="padding-top:0"><div class="w">
+ <div class="final rv"><span class="eyebrow">Dia 1</span><h2>Daqui a 30 dias você vai agradecer<br>por ter começado hoje.</h2><div class="cta" style="justify-content:center;margin-bottom:0"><a class="btn" href="index.html">Começar grátis agora <i data-i="arrow"></i></a></div></div>
+</div></section>
+</main>
+
+<footer><div class="w">
+ <a class="logo" href="#"><img src="icon.svg" alt="">Meu Controle de Vida</a>
+ <nav><a href="termos.html">Termos de uso</a><a href="privacidade.html">Privacidade</a><a data-support href="#" hidden>Suporte</a></nav>
+ <div class="disc">© <span id="y"></span> Meu Controle de Vida<span data-seller></span>. Resultados variam de pessoa para pessoa. O app traz orientações gerais e não substitui acompanhamento médico, nutricional ou de educação física.</div>
+</div></footer>
+
+<div class="sticky"><a class="btn block" href="index.html">Começar grátis</a></div>
+
+<script src="config.js"></script>
+<script>
+(function(){
+var I={
+check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+drop:'<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>',
+spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M18 16v4M16 18h4"/>',
+trophy:'<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H4v1a3 3 0 0 0 4 3M16 6h4v1a3 3 0 0 1-4 3M12 13v4M8.5 20h7M10 17h4"/>',
+apple:'<path d="M12 7c-2-1.5-6-1-6 4 0 5 3 9 6 9s6-4 6-9c0-5-4-5.5-6-4z"/><path d="M12 7c0-2 1-3 3-3.5"/>',
+dumbbell:'<path d="M6 7v10M3.5 9.5v5M18 7v10M20.5 9.5v5M6 12h12"/>',
+trend:'<path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/>',
+lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+bolt:'<path d="M13 3L5 14h6l-1 7 8-11h-6z"/>',
+shield:'<path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>'};
+document.querySelectorAll('i[data-i]').forEach(function(e){e.outerHTML='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(I[e.dataset.i]||'')+'</svg>'});
+
+var C=window.MCV||{},O=C.OFFERS||[],WA=C.SUPPORT_WHATSAPP||'';
+function href(o){return o.link||(WA?'https://wa.me/'+WA+'?text='+encodeURIComponent('Oi! Quero comprar o Meu Controle de Vida ('+o.titulo+' por '+o.preco+') via Pix.'):'index.html?premium=1')}
+function setLink(a,o){a.href=href(o);if(/^https?:/.test(a.href)&&a.host!==location.host){a.target='_blank';a.rel='noopener'}}
+if(O[0]){document.querySelectorAll('#offer0 [data-o]').forEach(function(e){var v=O[0][e.dataset.o];if(v)e.textContent=v;else e.style.display='none'});setLink(document.querySelector('[data-buy="0"]'),O[0])}
+var m=document.getElementById('more');O.slice(1).forEach(function(o){var a=document.createElement('a');a.className='btn sec block';a.textContent=o.titulo+' · '+o.preco+(o.nota?' ('+o.nota+')':'');setLink(a,o);m.appendChild(a)});
+var s=document.querySelector('[data-support]');if(WA){s.href='https://wa.me/'+WA;s.hidden=false}else if(C.SUPPORT_EMAIL){s.href='mailto:'+C.SUPPORT_EMAIL;s.hidden=false}
+var sl=C.SELLER||{};if(sl.nome&&sl.nome.indexOf('[')<0)document.querySelector('[data-seller]').textContent=' · '+sl.nome+(sl.doc&&sl.doc.indexOf('[')<0?' · '+sl.doc:'');
+document.getElementById('y').textContent=new Date().getFullYear();
+
+var st=document.querySelector('.sticky'),hc=document.querySelector('.hero .cta'),fin=document.querySelector('.final');
+if('IntersectionObserver' in window&&st){var vis={};var so=new IntersectionObserver(function(es){es.forEach(function(e){vis[e.target===hc?'h':'f']=e.isIntersecting||(e.target===hc&&e.boundingClientRect.top>0)});st.classList.toggle('on',!vis.h&&!vis.f)});so.observe(hc);so.observe(fin)}
+var rv=document.querySelectorAll('.rv');
+if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}})},{rootMargin:'0px 0px -8% 0px'});rv.forEach(function(e){io.observe(e)})}
+else rv.forEach(function(e){e.classList.add('on')});
+})();
+</script>
+</body>
+</html>
